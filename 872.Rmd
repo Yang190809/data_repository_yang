@@ -1,0 +1,283 @@
+---
+title: '872'
+author: "Yang Wang"
+date: "4/13/2020"
+output: pdf_document
+---
+Applying Urinary Biomarkers of 11-dehydrothromboxane B2 and 8-isoprostane to Understand the Health Effects of NO2 Exposure
+
+Long term exposure to NO2 is assocaited with cardiovascular disease and asthama
+
+2.1 Air Purifiers
+HEPA filters are High-efficiency particulate air filters. They can remove at least 99% of PM2.5. However, HEPA filters can easily become saturated with particles. They are hard to clean and expensive to replace. ESP filters and F8 prefilters are applied to filtration systems to solve this issue by depositing most of the PM2.5 particles before they reach the HEPA filter. F8 prefilter is a coarse filter that is usually installed in front to remove coarse particles. ESP is an electrostatic precipitator that is usually installed behind the F8 filters. It can remove > 60% of PM2.5 by charging the particles in the air and depositing them in a dust collector. However, ESP filters produce O3 while charging the air ( Day, D. B., et. al., 2018 ).
+
+ One study in Iran discovered a significant positive relationship between short-term NO2 exposure and 8-isoprostane in exhaled breath condensate (EBC) in healthy children aged 12-13 years old (Hashemzadeh, B., et. al., 2019). One study in New York City found that the increases in 1- to 5-day averages of nitrogen dioxide were significantly associated with increases in 8-isoprostane in EBC among 18-year old healthy and asthma affected individuals (Patel, M. M., et. al., 2013). Both studies show consistency with my results and suggest short term NO2 exposure is associated with urinary 8-isoprostane.
+This study focus on understanding the helth effects of NO2 expousre by applying the two biomakers
+
+1. merge data
+```{r}
+library(tidyverse)
+
+getwd()
+is <- read.csv("raw_data/8iso.csv")
+is <- select(is, Sample.ID, Calculated.Conc, Sample.Conc)
+colnames(is)[colnames(is) == "Calculated.Conc"] <- "is.origin"
+colnames(is)[colnames(is) == "Sample.Conc"] <- "is.conc"
+
+dh <- read.csv("raw_data/11dh.csv")
+dh <- select(dh, Sample.ID, Calculated.Conc, Sample.Conc)
+colnames(dh)[colnames(dh) == "Calculated.Conc"] <- "dh.origin"
+colnames(dh)[colnames(dh) == "Sample.Conc"] <- "dh.conc"
+
+merge1 <- merge(x=is,y=dh,by="Sample.ID",all=TRUE)
+
+list <- read.csv("raw_data/urine_list.csv")
+merge2 <- merge(x=merge1,y=list,by="Sample.ID",all=TRUE)
+
+urine.info <- read.csv("raw_data/urine_info.csv")
+merge3 <- merge(x=merge2,y=urine.info,by=c("Subject.ID","visit"),all=TRUE)
+dim(merge3)
+full.data <- na.omit(merge3)
+dim(full.data)
+
+mean.cre<- mean(full.data$USG)
+mean.cre
+
+full.data$is.ad <- (full.data$is.conc/(1-full.data$USG))*(1-mean.cre)
+full.data$dh.ad <- (full.data$dh.conc/(1-full.data$USG))*(1-mean.cre)
+
+
+final.dat<- select(full.data, Sample.ID, Subject.ID, group, visit, is.ad, dh.ad, is.conc, dh.conc,is.origin, dh.origin, group,	COLD,	MNST,	last.ate,	wkday.start,go.home,Smoker,go.home, dt_smoke,	o3exp.12h,	pmexp.12h,no2exp.12h,	so2exp.12h,	Temp.12h,	RHx.12h,	o3exp.24h,	pmexp.24h,	no2exp.24h,	so2exp.24h,	Temp.24h,	RHx.24h,	o3exp.1w,	pmexp.1w,	no2exp.1w,	so2exp.1w,	Temp.1w,	RHx.1w,	o3exp.2w,	pmexp.2w,	no2exp.2w,	so2exp.2w,	Temp.2w,	RHx.2w )
+
+
+write.csv(final.dat, row.names = FALSE, file = "processed_data/final.dat.csv")
+```
+
+
+```{r}
+dat <- read.csv("processed_data/final.dat.csv")
+#remove outliers
+dat$scenarios <- 1
+dat$scenarios[dat$visit==2|dat$visit==3]<-2
+dat$scenarios[(dat$visit==2|dat$visit==3)&dat$group=="A"]<-3
+dat$scenarios[dat$visit==4]<-4
+dat$scenarios<-as.factor(dat$scenarios)
+
+summary(dat$is.origin)
+summary(dat$dh.origin)
+
+dat1<- dat[-c(4,7,89,147,167),]
+
+shapiro.test(dat1$is.ad)
+shapiro.test(dat1$dh.ad)
+shapiro.test(log(dat1$is.ad))
+shapiro.test(log(dat1$dh.ad))
+
+sum3<-summary(dat$no2exp.12h)
+no2.12 <-sum3[5]-sum3[2]
+no2.12
+sum4<-summary(dat$no2exp.24h)
+no2.24 <-sum4[5]-sum4[2]
+no2.24
+sum5<-summary(dat$no2exp.1w)
+no2.1w <-sum5[5]-sum5[2]
+no2.1w
+sum6<-summary(dat$no2exp.2w)
+no2.2w <-sum6[5]-sum6[2]
+no2.2w
+```
+
+model for 8-IP
+```{r,warning=FALSE, message=FALSE}
+library(lmerTest)
+library(MuMIn)
+library(car)
+
+mo1<- lmer(log(is.ad) ~no2exp.12h+o3exp.12h+ pmexp.12h+so2exp.12h+Temp.12h+RHx.12h + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
+
+
+mo1<- lmer(log(is.ad) ~no2exp.12h+o3exp.12h+ pmexp.12h+so2exp.12h+Temp.12h+RHx.12h + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
+summary(mo1)
+step(mo1)
+
+mo1.1<- lmer(log(is.ad) ~ no2exp.12h +o3exp.12h + (1 | Subject.ID),data=dat1)
+summary(mo1.1)
+vif(mo1.1)
+r.squaredGLMM (mo1)
+(exp(0.025912)-1)*no2.12
+(exp(0.025912 +0.006693)-1)*no2.12
+(exp(0.025912 -0.006693)-1)*no2.12
+res1.1 <- resid(mo1, type = "pearson")
+dat[which(abs(res1.1) > 2.5),]
+
+
+mo2<- lmer(log(is.ad) ~ no2exp.24h+o3exp.24h+ pmexp.24h+so2exp.24h+Temp.24h+RHx.24h + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
+summary(mo2)
+step(mo2)
+
+mo2.1<- lmer(log(is.ad) ~ no2exp.24h + o3exp.24h + (1 | Subject.ID),data=dat1)
+summary(mo2.1)
+(exp(0.031555)-1)*no2.24
+(exp(0.031555 +0.008104)-1)*no2.24
+(exp(0.031555 -0.008104)-1)*no2.24
+vif(mo2.1)
+r.squaredGLMM (mo2.1)
+res2.1 <- resid(mo2.1, type = "pearson")
+dat[which(abs(res2.1) > 2.5),]
+
+mo3<- lmer(log(is.ad) ~ no2exp.1w+o3exp.1w+ pmexp.1w+so2exp.1w+Temp.1w+RHx.1w + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
+summary(mo3)
+step(mo3)
+
+mo3.1<- lmer(log(is.ad) ~ no2exp.1w + so2exp.1w + (1 | Subject.ID),data=dat1)
+summary(mo3.1)
+(exp(0.031555)-1)*no2.1w
+(exp(0.031555 +0.008104)-1)*no2.1w
+(exp(0.031555 -0.008104)-1)*no2.1w
+vif(mo3.1)
+r.squaredGLMM (mo3.1)
+
+
+mo4<- lmer(log(is.ad) ~ no2exp.2w+o3exp.2w+ pmexp.2w+so2exp.2w+Temp.2w+RHx.2w + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
+summary(mo4)#none
+step(mo4)
+
+mo4.1<- lmer(log(is.ad) ~ no2exp.2w + so2exp.2w + (1 | Subject.ID),data=dat1)
+summary(mo4.1)
+vif(mo4.1)
+r.squaredGLMM (mo4.1)
+
+mo5<- lmer(log(dh.ad) ~ no2exp.12h+o3exp.12h+ pmexp.12h+so2exp.12h+Temp.12h+RHx.12h + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
+summary(mo5)
+step(mo5)#none
+
+vif(mo5)
+r.squaredGLMM (mo5)
+res5 <- resid(mo5, type = "pearson")
+dat[which(abs(res5) > 2.5),]
+
+mo6<- lmer(log(dh.ad) ~ no2exp.24h+o3exp.24h+ pmexp.24h+so2exp.24h+Temp.24h+RHx.24h + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
+summary(mo6)
+step(mo6)
+
+mo6.1<- lmer(log(dh.ad) ~no2exp.24h + pmexp.24h + (1|Subject.ID),data=dat1)
+summary(mo6.1)
+vif(mo6.1)
+r.squaredGLMM (mo6)
+res6 <- resid(mo6, type = "pearson")
+dat[which(abs(res6) > 2.5),]
+
+mo7<- lmer(log(dh.ad) ~ no2exp.1w+o3exp.1w+ pmexp.1w+so2exp.1w+Temp.1w+RHx.1w + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
+summary(mo7)
+step(mo7)#none
+
+vif(mo7)
+r.squaredGLMM (mo7)
+
+mo8<- lmer(log(dh.ad) ~ no2exp.2w+o3exp.2w+ pmexp.2w+so2exp.2w+Temp.2w+RHx.2w + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
+summary(mo8)
+step(mo8)#none
+
+vif(mo8)
+r.squaredGLMM (mo8)
+
+```
+
+plot for 8-IP
+```{r，warning=FALSE, message=FALSE}
+library(tidyverse)
+library(cowplot)
+library(RColorBrewer)
+mytheme <- theme_classic(base_size = 25) +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top")
+theme_set(mytheme)
+
+
+is.12h <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.12h)) +
+  geom_point(shape=1,aes(colour=scenarios), size = 2) +
+  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
+   #geom_point(shape=1, size = 2,color="darkgrey") +
+  geom_smooth(method="lm",se=FALSE,color="black")+
+  #geom_line(aes(y = predict(mo1.1)),size=1)+ 
+  labs(x = "NO2 exposure in 12 hours", y = "log(8-isoprostane ng/ml)") +
+    theme(legend.position="top")+
+  ylim(0,5)
+print(is.12h)
+
+is.24h <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.24h)) +
+  geom_point(shape=1,aes(colour=scenarios), size = 2) +
+  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
+   #geom_point(shape=1, size = 2,color="darkgrey") +
+  geom_smooth(method="lm",se=FALSE,color="black")+
+  #geom_line(aes(y = predict(mo1.1)),size=1)+ 
+  labs(x = "NO2 exposure in 24 hours", y = "") +
+    theme(legend.position="top")+
+  ylim(0,5)
+print(is.24h)
+
+is.1w <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.1w)) +
+  geom_point(shape=1,aes(colour=scenarios), size = 2) +
+  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
+   #geom_point(shape=1, size = 2,color="darkgrey") +
+  geom_smooth(method="lm",se=FALSE,color="black")+
+  labs(x = "NO2 exposure in one week", y = "log(8-isoprostane ng/ml)") +
+    #theme(legend.position="top")+
+  ylim(0,5)
+print(is.1w)
+
+is.2w <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.2w)) +
+  geom_point(shape=1,aes(colour=scenarios), size = 2) +
+  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
+   #geom_point(shape=1, size = 2,color="darkgrey") +
+  geom_smooth(method="lm",se=FALSE,color="black")+
+  #geom_line(aes(y = predict(mo1.1)),size=1)+ 
+  labs(x = "NO2 exposure in 2 weeks", y = "") +
+    #theme(legend.position="top")+
+  ylim(0,5)
+print(is.2w)
+plot_grid(is.12h, is.24h,is.1w,is.2w, nrow = 2, align = 'h')
+```
+
+
+Plot for 11DH
+```{r}
+dh.12h <- ggplot(dat1, aes(y =log(dh.ad) , x =no2exp.12h)) +
+  geom_point(shape=1,aes(colour=scenarios), size = 2) +
+  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
+  geom_smooth(method="lm",se=FALSE,color="black")+
+  #geom_line(aes(y = predict(mo5)),size=1)+ 
+  labs(x = "NO2 exposure in 12 hours", y = "log(11dhTxB2 ng/ml)") +
+  ylim(0,3) 
+print(dh.12h)
+
+dh.24h <- ggplot(dat1, aes(y =log(dh.ad) , x =no2exp.24h)) +
+  geom_point(shape=1,aes(colour=scenarios), size = 2) +
+  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
+  geom_smooth(method="lm",se=FALSE,color="black")+
+  #geom_line(aes(y = predict(mo5)),size=1)+ 
+  labs(x = "O3 exposure in 24 hours", y = "") +
+  ylim(0,3)
+print(dh.24h)
+
+dh.1w <- ggplot(dat1, aes(y =log(dh.ad) , x =no2exp.1w)) +
+  geom_point(shape=1,aes(colour=scenarios), size = 2) +
+  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
+  geom_smooth(method="lm",se=FALSE,color="black")+
+  #geom_line(aes(y = predict(mo5)),size=1)+ 
+  labs(x = "O3 exposure in one week", y = "log(11dhTxB2 ng/ml)") +
+  ylim(0,3) 
+print(dh.1w)
+
+dh.2w <- ggplot(dat1, aes(y =log(dh.ad) , x =no2exp.2w)) +
+  geom_point(shape=1,aes(colour=scenarios), size = 2) +
+  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
+  geom_smooth(method="lm",se=FALSE,color="black")+
+  #geom_line(aes(y = predict(mo5)),size=1)+ 
+  labs(x = "NO2 exposure in two weeks", y = "") +
+  ylim(0,3) 
+print(dh.2w)
+
+plot_grid(dh.12h, dh.24h,dh.1w,dh.2w, nrow = 2, align = 'h')
+plot_grid(is.12h, dh.12h, nrow = 1, align = 'h')
+```
