@@ -1,78 +1,167 @@
+
 ---
-title: '872'
+output: 
+  pdf_document:
+    keep_tex: yes
+    fig_caption: yes
+    number_sections: yes
+geometry: margin=2.54cm
+title: "Applying Urinary Biomarkers of 11-dehydrothromboxane B2 and 8-isoprostane to Understand the Health Effects of NO2 Exposure"
+subtitle: "https://github.com/Yang190809/data_repository_yang"
 author: "Yang Wang"
-date: "4/13/2020"
-output: pdf_document
+fontsize: 12pt
+mainfont: Times New Roman
+
 ---
-Applying Urinary Biomarkers of 11-dehydrothromboxane B2 and 8-isoprostane to Understand the Health Effects of NO2 Exposure
+**Abstract**
 
-Long term exposure to NO2 is assocaited with cardiovascular disease and asthama
+Mounting evidence shows that exposure to NO2 generates oxidative stress. Oxidative stress can cause lipid damage, which plays an important role in various respiratory and cardiovascular diseases.  Urinary 8-isoprostane is a product of lipid peroxidation which can reflect systemic lipid damage. I built linear mix models to analyze the relationship between the level of urinary 8-isoprostane with the level of NO2 exposure. I found that short term NO2 exposure was associated with lipid peroxidation, reflected by increased concentrations of urinary 8-isoprostane associated with increasing exposure. One IQR (7.41 µg/m3) incremental change of 12-h NO2 exposure was associated with an increase of 8-isoprostane level by 19.45% (95% Cl: 14.37%, 24.55%, p-value <0.001). One IQR (8.64 µg/m3) incremental change of 24-h NO2 exposure was associated an increase in 8-isoprostane level by 27.69% (95% Cl: 20.50%, 34.95% ,  p-value <0.001). One IQR (4.47 µg/m3) incremental change of 1-week NO2 exposure was associated with an increase in 8-isoprostane level by 25.15% (95% Cl: 14.14%,36.31%, p-value <0.05). One IQR (2.74 µg/m3) incremental change of 2-week NO2 exposure was associated with an increase in 8-isoprostane level by 15.68% (95% Cl: 8.87%,22.65%, p-value <0.05). 
 
-2.1 Air Purifiers
-HEPA filters are High-efficiency particulate air filters. They can remove at least 99% of PM2.5. However, HEPA filters can easily become saturated with particles. They are hard to clean and expensive to replace. ESP filters and F8 prefilters are applied to filtration systems to solve this issue by depositing most of the PM2.5 particles before they reach the HEPA filter. F8 prefilter is a coarse filter that is usually installed in front to remove coarse particles. ESP is an electrostatic precipitator that is usually installed behind the F8 filters. It can remove > 60% of PM2.5 by charging the particles in the air and depositing them in a dust collector. However, ESP filters produce O3 while charging the air ( Day, D. B., et. al., 2018 ).
+\newpage
+\tableofcontents 
 
- One study in Iran discovered a significant positive relationship between short-term NO2 exposure and 8-isoprostane in exhaled breath condensate (EBC) in healthy children aged 12-13 years old (Hashemzadeh, B., et. al., 2019). One study in New York City found that the increases in 1- to 5-day averages of nitrogen dioxide were significantly associated with increases in 8-isoprostane in EBC among 18-year old healthy and asthma affected individuals (Patel, M. M., et. al., 2013). Both studies show consistency with my results and suggest short term NO2 exposure is associated with urinary 8-isoprostane.
-This study focus on understanding the helth effects of NO2 expousre by applying the two biomakers
 
-1. merge data
-```{r}
-library(tidyverse)
+\newpage
+# Rationale and Research Questions
+Exposure to NO2 associated with cardiovascular disease, lung function impairment and asthma (Mölter, A., et. al.,2013, Collart, P., et. al.,2018, Takenoue, Y., et. al., 2012 ). Mounting evidence shows that exposure to NO2 generates oxidative stress (Hashemzadeh, B., et. al.,2019). Oxidative stress can cause lipid damage (Black, C. N., et. al., 2017), which plays an important role in various respiratory and cardiovascular diseases. (Zanolin, M. E., et. a.,2015, Lakshmi, S. V., et. al., 2009). I applied 8-isoprostane to investigate the health effects of short term NO2 exposure.
 
+
+8-isoprostane is the product of the oxidized cell membrane after being attacked by reactive oxygen species such as peroxides. Therefore, 8-isoprostane can reflect lipid damage (Danielsen et al., 2009). 8-isoprostane in urine does not have a diurnal variation and has been proven to be a stable biomarker showing systemic lipid damage. It has been applied in studying diseases such as type 2 diabetes mellitus, obesity, coronary heart disease, asthma, and acute respiratory distress syndrome (Nuernberg, A. M., et al., 2008). Nevertheless, the use of this biomarker in the research of air pollution and its health effects is scarce. One study in Iran discovered a significant positive relationship between short-term NO2 exposure and 8-isoprostane in exhaled breath condensate (EBC) in healthy children aged 12-13 years old (Hashemzadeh, B., et. al., 2019). One study in New York City found that the increases in 1- to 5-day averages of nitrogen dioxide were significantly associated with increases in 8-isoprostane in EBC among 18-year old healthy and asthma affected individuals (Patel, M. M., et. al., 2013).
+My research question is:  If the NO2 exposure is positively associated with urinary 8-isoprostane?
+Among periods of 12-hour,24-hour,1-week and 2-weeks, which period has the most significant association with urinary 8-isoprostane?
+
+
+# Dataset Information
+
+All the data are from Jim Zhang's lab. Jim Zhang is a professor at the Nicholas School of Environment at Duke University. The file 8-iso is the data set of urinary biomarker 8-isoprostane. The file urine_info is the data set that has information about the subjects who provided the urine samples. The urine list is a data set with lists of information of sample ID, subject ID and visits. The meaning of the columns as well as units and class of the data in each foler is listed below. Column names without descriptors are irrelevant to this study.
+
+## Urine list raw data set
+The urine list has the information about the sample ID, subject ID and visits.
+
+Column Name	| Meaning	                            |units |	  class of the data
+------------|-------------------------------------|----- |---------------------
+ Sample ID	|   the identity number of the samples	  |NA	 |      integer
+Subject ID |	 the identity number of the subjects	|NA	    |   integer
+ visit	  |   the number of the 4 visits (1,2,3 or 4)	|NA	  |     integer
+ 
+\center __Table 1__ \center 
+
+## 8-isoprostane data set
+The 8-isoprostane data set has information about 8-isoprostane concentration tested in the mass spectrum and the concentration of 8-isoprostane in original urine samples. The limit of detection for 8-isoprostane was 0.016ng/ml. Any value which is below 0.016 in the column of calculated Conc in 8-is data set should be excluded as an error.
+
+Column Name	|    Meaning                                   |    Units	  |    Class of the data
+------------|----------------------------------------------|------------|---------------------
+  Sample ID |      the identity number of the samples	|         NA	   |     integer
+ Calculated Conc|	the concentration tested by the machine   |   ng/ml	 |   numeric
+Sample Conc	 |   the concentration in the original urine|	     ng/ml	  |  numeric
+\center __Table 2__ \center 
+
+## Urine Info	
+The urine info is the data set that has information about subjects characterictics and average pollutants exposure (NO2, SO2, O3 and PM2.5)over the periods of 12 hours, 24 hours, one week and two weeks. It also includes average temperature and humidity over the periods of 12 hours, 24 hours, one week and two weeks. 
+
+Column name|	Meaning                             |	Units|	Class of the data
+---------- |--------------------------------------|----- |---------------------
+ample_ID  |	the identity number of the samples  |	NA |	integer            
+SubjectID  |	the identity number of the subjects| NA	|integer    
+COLD	|cold ( represent respiratory infection)|	NA|	category
+MNST	|menstration during visit|	NA|	category
+last.ate|	the hours to the last meal|	hours	|integer
+wkday.start|	the day that the subject start their work	|NA	|category
+dt_smoke|	second-hand smoke exposure in hours|	hours	|numeric
+USG	urine |specific gravity	|g/ml	|numeric
+o3exp.12h|	the exposure of ozone in 12h|	ug/m3	|numeric
+pmexp.12h	|the exposure of PM2.5 in 12h|	ug/m3|	numeric
+no2exp.12h|	the exposure of NO2 in 12h|	ug/m3	|numeric
+so2exp.12h|	the exposure of SO2 in 12h	|ug/m3|	numeric
+Temp.12h|	temperature in 12h|	ug/m3	|numeric
+RHx.12h|	humidity in 12h	|ug/m3|	numeric
+\center __Table 3__ \center 
+
+## Data Wrangling
+
+My data wrangling started with loading the data set of 8-isoprostane and changing the column names. Then I merged this data set with the urine list to match the sample ID with subjects ID and visit. Then this merged data was merged with the urine info data set using subject ID and visit as the matching keys. After the second merging, the rows with NAs were removed. Then I calculated the normalized 8-isoprostane using the specific urine gravity. This normlization can adjust the dilution in urine. I obtained my final data by selecting columns that is revelant to my rearch question. Finally, the processed data was saved into a processed data folder.
+![Alt text](C:/Users/26059/OneDrive/Desktop/ENV 872 R/Yang_ENV872/directory_yang/table.png)
+\center __Table 4__ \center 
+
+\newpage
+**1. Data wrangling**
+```{r setup, warning=FALSE, message=FALSE}
+# Set working directory
 getwd()
+# Load packages
+library(tidyverse)
+library(lmerTest)
+library(MuMIn)
+library(car)
+library(tidyverse)
+library(cowplot)
+library(RColorBrewer)
+# Set ggplot theme
+mytheme <- theme_classic(base_size = 25) +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top")
+theme_set(mytheme)
+
+# Load dataset 1
 is <- read.csv("raw_data/8iso.csv")
 is <- select(is, Sample.ID, Calculated.Conc, Sample.Conc)
 colnames(is)[colnames(is) == "Calculated.Conc"] <- "is.origin"
 colnames(is)[colnames(is) == "Sample.Conc"] <- "is.conc"
 
-dh <- read.csv("raw_data/11dh.csv")
-dh <- select(dh, Sample.ID, Calculated.Conc, Sample.Conc)
-colnames(dh)[colnames(dh) == "Calculated.Conc"] <- "dh.origin"
-colnames(dh)[colnames(dh) == "Sample.Conc"] <- "dh.conc"
-
-merge1 <- merge(x=is,y=dh,by="Sample.ID",all=TRUE)
-
+# Load dataset 2
 list <- read.csv("raw_data/urine_list.csv")
-merge2 <- merge(x=merge1,y=list,by="Sample.ID",all=TRUE)
+
+#merge
+merge1 <- merge(x=is,y=list,by="Sample.ID",all=TRUE)
 
 urine.info <- read.csv("raw_data/urine_info.csv")
-merge3 <- merge(x=merge2,y=urine.info,by=c("Subject.ID","visit"),all=TRUE)
+merge3 <- merge(x=merge1,y=urine.info,by=c("Subject.ID","visit"),all=TRUE)
 dim(merge3)
 full.data <- na.omit(merge3)
 dim(full.data)
-
 mean.cre<- mean(full.data$USG)
 mean.cre
 
+#calculate normalized biomarker concentration
 full.data$is.ad <- (full.data$is.conc/(1-full.data$USG))*(1-mean.cre)
-full.data$dh.ad <- (full.data$dh.conc/(1-full.data$USG))*(1-mean.cre)
 
+#select useful colums
+final.dat<- select(full.data, Sample.ID, Subject.ID, is.ad, is.conc, is.origin, group,	COLD,	MNST,	last.ate,	wkday.start,go.home,Smoker,go.home, dt_smoke,	o3exp.12h,	pmexp.12h,no2exp.12h,	so2exp.12h,	Temp.12h,	RHx.12h,	o3exp.24h,	pmexp.24h,	no2exp.24h,	so2exp.24h,	Temp.24h,	RHx.24h,	o3exp.1w,	pmexp.1w,	no2exp.1w,	so2exp.1w,	Temp.1w,	RHx.1w,	o3exp.2w,	pmexp.2w,	no2exp.2w,	so2exp.2w,	Temp.2w,	RHx.2w )
 
-final.dat<- select(full.data, Sample.ID, Subject.ID, group, visit, is.ad, dh.ad, is.conc, dh.conc,is.origin, dh.origin, group,	COLD,	MNST,	last.ate,	wkday.start,go.home,Smoker,go.home, dt_smoke,	o3exp.12h,	pmexp.12h,no2exp.12h,	so2exp.12h,	Temp.12h,	RHx.12h,	o3exp.24h,	pmexp.24h,	no2exp.24h,	so2exp.24h,	Temp.24h,	RHx.24h,	o3exp.1w,	pmexp.1w,	no2exp.1w,	so2exp.1w,	Temp.1w,	RHx.1w,	o3exp.2w,	pmexp.2w,	no2exp.2w,	so2exp.2w,	Temp.2w,	RHx.2w )
-
-
+#save processed data set
 write.csv(final.dat, row.names = FALSE, file = "processed_data/final.dat.csv")
 ```
 
-
-```{r}
+**2.Explore the data**
+```{r,warning=FALSE, message=FALSE}
+library(ggplot2)
+#load processed data set
 dat <- read.csv("processed_data/final.dat.csv")
 #remove outliers
-dat$scenarios <- 1
-dat$scenarios[dat$visit==2|dat$visit==3]<-2
-dat$scenarios[(dat$visit==2|dat$visit==3)&dat$group=="A"]<-3
-dat$scenarios[dat$visit==4]<-4
-dat$scenarios<-as.factor(dat$scenarios)
-
 summary(dat$is.origin)
-summary(dat$dh.origin)
-
 dat1<- dat[-c(4,7,89,147,167),]
 
+#test normality
 shapiro.test(dat1$is.ad)
-shapiro.test(dat1$dh.ad)
 shapiro.test(log(dat1$is.ad))
-shapiro.test(log(dat1$dh.ad))
+#explore the data
+is.plot1 <- boxplot(dat1$is.ad,colors="darkblue",ylab="8-isoprostane ng/ml")
 
+```
+\center __Figure 1: Plot of 8-isoprostane__ \center
+
+Figure 1 shows that the range of concentraion of 8-isoprostane is huge and it is not normlized
+
+```{r,warning=FALSE, message=FALSE}
+is.plot1 <- boxplot(log(dat1$is.ad),color="darkblue",ylab="log(8-isoprostane ng/ml)")
+
+```
+\center __Figure 2: Plot of log(8-isoprostane)__ \center
+
+Figure 2 shows that the log(8-isoprostane) looks more normlized than original scale of 8-isoprostane.
+
+```{r,warning=FALSE, message=FALSE}
+#calculate IQR for each period
 sum3<-summary(dat$no2exp.12h)
 no2.12 <-sum3[5]-sum3[2]
 no2.12
@@ -87,197 +176,173 @@ no2.2w <-sum6[5]-sum6[2]
 no2.2w
 ```
 
-model for 8-IP
+**3.Build models**
+
+3.1 Build models for 12-hour NO2 exposure
 ```{r,warning=FALSE, message=FALSE}
-library(lmerTest)
-library(MuMIn)
-library(car)
-
 mo1<- lmer(log(is.ad) ~no2exp.12h+o3exp.12h+ pmexp.12h+so2exp.12h+Temp.12h+RHx.12h + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
-
-
-mo1<- lmer(log(is.ad) ~no2exp.12h+o3exp.12h+ pmexp.12h+so2exp.12h+Temp.12h+RHx.12h + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
-summary(mo1)
+#find the best model with lowest AIC
 step(mo1)
-
+#best model for 12-hour NO2 exposure
 mo1.1<- lmer(log(is.ad) ~ no2exp.12h +o3exp.12h + (1 | Subject.ID),data=dat1)
 summary(mo1.1)
+#check F value
+anova(mo1.1)
+#check collinearirty
 vif(mo1.1)
-r.squaredGLMM (mo1)
+#get R^2
+r.squaredGLMM (mo1.1)
+#identify outliers
+res1.1 <- resid(mo1, type = "pearson")
+dat[which(abs(res1.1) > 2.5),]
+#calculate IQR change
 (exp(0.025912)-1)*no2.12
 (exp(0.025912 +0.006693)-1)*no2.12
 (exp(0.025912 -0.006693)-1)*no2.12
-res1.1 <- resid(mo1, type = "pearson")
-dat[which(abs(res1.1) > 2.5),]
+#plot residues
+plot(mo1.1)
+```
+\center __Figure 3: diagnostic plot of model 1.1__ \center
+Figure 3 shows that the higher the fitted value, the higher the residue. However, in general it looks fine.
 
-
+3.2 Build models for 24-hour NO2 exposure
+```{r,warning=FALSE, message=FALSE}
 mo2<- lmer(log(is.ad) ~ no2exp.24h+o3exp.24h+ pmexp.24h+so2exp.24h+Temp.24h+RHx.24h + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
-summary(mo2)
 step(mo2)
-
 mo2.1<- lmer(log(is.ad) ~ no2exp.24h + o3exp.24h + (1 | Subject.ID),data=dat1)
 summary(mo2.1)
-(exp(0.031555)-1)*no2.24
-(exp(0.031555 +0.008104)-1)*no2.24
-(exp(0.031555 -0.008104)-1)*no2.24
+anova(mo2.1)
 vif(mo2.1)
 r.squaredGLMM (mo2.1)
 res2.1 <- resid(mo2.1, type = "pearson")
 dat[which(abs(res2.1) > 2.5),]
-
+#calculate IQR change
+(exp(0.031555)-1)*no2.24
+(exp(0.031555 +0.008104)-1)*no2.24
+(exp(0.031555 -0.008104)-1)*no2.24
+plot(mo2.1)
+```
+\center __Figure 4: diagnostic plot of model 2.1__ \center
+Figure 4 shows that the higher the fitted value, the higher the residue. However, in general it looks fine.
+3.3 Build models for 1-week NO2 exposure
+```{r,warning=FALSE, message=FALSE}
 mo3<- lmer(log(is.ad) ~ no2exp.1w+o3exp.1w+ pmexp.1w+so2exp.1w+Temp.1w+RHx.1w + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
-summary(mo3)
 step(mo3)
-
 mo3.1<- lmer(log(is.ad) ~ no2exp.1w + so2exp.1w + (1 | Subject.ID),data=dat1)
 summary(mo3.1)
-(exp(0.031555)-1)*no2.1w
-(exp(0.031555 +0.008104)-1)*no2.1w
-(exp(0.031555 -0.008104)-1)*no2.1w
+anova(mo3.1)
 vif(mo3.1)
 r.squaredGLMM (mo3.1)
-
+#calculate IQR change
+(exp( 0.02877)-1)*no2.1w
+(exp( 0.02877 +0.01250)-1)*no2.1w
+(exp( 0.02877 -0.01250)-1)*no2.1w
+plot(mo3.1)
+```
+\center __Figure 5: diagnostic plot of model 3.1__ \center
+Figure 5 shows that the higher the fitted value, the higher the residue. However, in general it looks fine.
+3.4 Build models for 2-week NO2 exposure
+```{r,warning=FALSE, message=FALSE}
 
 mo4<- lmer(log(is.ad) ~ no2exp.2w+o3exp.2w+ pmexp.2w+so2exp.2w+Temp.2w+RHx.2w + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
-summary(mo4)#none
+summary(mo4)
 step(mo4)
-
 mo4.1<- lmer(log(is.ad) ~ no2exp.2w + so2exp.2w + (1 | Subject.ID),data=dat1)
 summary(mo4.1)
+anova(mo4.1)
 vif(mo4.1)
 r.squaredGLMM (mo4.1)
-
-mo5<- lmer(log(dh.ad) ~ no2exp.12h+o3exp.12h+ pmexp.12h+so2exp.12h+Temp.12h+RHx.12h + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
-summary(mo5)
-step(mo5)#none
-
-vif(mo5)
-r.squaredGLMM (mo5)
-res5 <- resid(mo5, type = "pearson")
-dat[which(abs(res5) > 2.5),]
-
-mo6<- lmer(log(dh.ad) ~ no2exp.24h+o3exp.24h+ pmexp.24h+so2exp.24h+Temp.24h+RHx.24h + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
-summary(mo6)
-step(mo6)
-
-mo6.1<- lmer(log(dh.ad) ~no2exp.24h + pmexp.24h + (1|Subject.ID),data=dat1)
-summary(mo6.1)
-vif(mo6.1)
-r.squaredGLMM (mo6)
-res6 <- resid(mo6, type = "pearson")
-dat[which(abs(res6) > 2.5),]
-
-mo7<- lmer(log(dh.ad) ~ no2exp.1w+o3exp.1w+ pmexp.1w+so2exp.1w+Temp.1w+RHx.1w + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
-summary(mo7)
-step(mo7)#none
-
-vif(mo7)
-r.squaredGLMM (mo7)
-
-mo8<- lmer(log(dh.ad) ~ no2exp.2w+o3exp.2w+ pmexp.2w+so2exp.2w+Temp.2w+RHx.2w + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
-summary(mo8)
-step(mo8)#none
-
-vif(mo8)
-r.squaredGLMM (mo8)
-
+#calculate IQR change
+(exp(0.05572)-1)*no2.2w
+(exp(0.05572 +0.02382)-1)*no2.2w
+(exp(0.05572 -0.02382)-1)*no2.2w
+plot(mo4.1)
 ```
+\center __Figure 6: diagnostic plot of model 4.1__ \center
+Figure 3 shows that the higher the fitted value, the higher the residue. However, in general it looks fine.
 
-plot for 8-IP
-```{r，warning=FALSE, message=FALSE}
-library(tidyverse)
-library(cowplot)
-library(RColorBrewer)
-mytheme <- theme_classic(base_size = 25) +
-  theme(axis.text = element_text(color = "black"), 
-        legend.position = "top")
-theme_set(mytheme)
-
-
+**4.Ploting Results**
+4.1 Relationship between log(8-isoprostane) and 12-hour NO2 exposure
+```{r,warning=FALSE, message=FALSE,echo=FALSE}
 is.12h <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.12h)) +
-  geom_point(shape=1,aes(colour=scenarios), size = 2) +
-  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
-   #geom_point(shape=1, size = 2,color="darkgrey") +
+  geom_point(shape=1, size = 2) +
+   geom_point(shape=1, size = 2,color="darkgrey") +
   geom_smooth(method="lm",se=FALSE,color="black")+
-  #geom_line(aes(y = predict(mo1.1)),size=1)+ 
   labs(x = "NO2 exposure in 12 hours", y = "log(8-isoprostane ng/ml)") +
     theme(legend.position="top")+
   ylim(0,5)
 print(is.12h)
+```
+\center __Figure 7:Relationship between log(8-isoprostane) and 12-hour NO2 exposure __ \center
 
+Figure 7 shows that there is a positive relationship beteween 12-hour NO2 exposure and log(8-isoprostane).
+```{r,warning=FALSE, message=FALSE,echo=FALSE}
 is.24h <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.24h)) +
-  geom_point(shape=1,aes(colour=scenarios), size = 2) +
-  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
-   #geom_point(shape=1, size = 2,color="darkgrey") +
+  geom_point(shape=1, size = 2) +
+   geom_point(shape=1, size = 2,color="darkgrey") +
   geom_smooth(method="lm",se=FALSE,color="black")+
-  #geom_line(aes(y = predict(mo1.1)),size=1)+ 
   labs(x = "NO2 exposure in 24 hours", y = "") +
     theme(legend.position="top")+
   ylim(0,5)
 print(is.24h)
-
+```
+\center __Figure 8:Relationship between log(8-isoprostane) and 24-hour NO2 exposure __ \center
+Figure 8 shows that there is a positive relationship beteween 24-hour NO2 exposure and log(8-isoprostane).
+```{r,warning=FALSE, message=FALSE,echo=FALSE}
 is.1w <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.1w)) +
-  geom_point(shape=1,aes(colour=scenarios), size = 2) +
-  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
-   #geom_point(shape=1, size = 2,color="darkgrey") +
+  geom_point(shape=1, size = 2) +
+   geom_point(shape=1, size = 2,color="darkgrey") +
   geom_smooth(method="lm",se=FALSE,color="black")+
   labs(x = "NO2 exposure in one week", y = "log(8-isoprostane ng/ml)") +
-    #theme(legend.position="top")+
+    theme(legend.position="top")+
   ylim(0,5)
 print(is.1w)
-
+```
+\center __Figure 9:Relationship between log(8-isoprostane) and 1-week NO2 exposure __ \center
+Figure 9 shows that there is a positive relationship beteween 1-week NO2 exposure and log(8-isoprostane).
+```{r,warning=FALSE, message=FALSE,echo=FALSE}
 is.2w <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.2w)) +
-  geom_point(shape=1,aes(colour=scenarios), size = 2) +
-  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
-   #geom_point(shape=1, size = 2,color="darkgrey") +
+  geom_point(shape=1,size = 2) +
+   geom_point(shape=1, size = 2,color="darkgrey") +
   geom_smooth(method="lm",se=FALSE,color="black")+
-  #geom_line(aes(y = predict(mo1.1)),size=1)+ 
   labs(x = "NO2 exposure in 2 weeks", y = "") +
-    #theme(legend.position="top")+
+    theme(legend.position="top")+
   ylim(0,5)
 print(is.2w)
-plot_grid(is.12h, is.24h,is.1w,is.2w, nrow = 2, align = 'h')
+
 ```
+\center __Figure 10:Relationship between log(8-isoprostane) and 2-week NO2 exposure __ \center
+Figure 10 shows that there is a positive relationship beteween 2-week NO2 exposure and log(8-isoprostane).
+
+# Exploratory Analysis 
+The Shapiro tests showed that concentrations of urinary 8-isoprostane is not normalized (p-value<0.001). I log-transformed it to put it into my models as the respondent variables.
 
 
-Plot for 11DH
-```{r}
-dh.12h <- ggplot(dat1, aes(y =log(dh.ad) , x =no2exp.12h)) +
-  geom_point(shape=1,aes(colour=scenarios), size = 2) +
-  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
-  geom_smooth(method="lm",se=FALSE,color="black")+
-  #geom_line(aes(y = predict(mo5)),size=1)+ 
-  labs(x = "NO2 exposure in 12 hours", y = "log(11dhTxB2 ng/ml)") +
-  ylim(0,3) 
-print(dh.12h)
+# Analysis
+I used linear mixed models with participant-specific intercepts. The inclusion of participants as a variable in mixed-effects models account for the correlation of repeated measurements from the same individuals and precludes the need to control for participant characteristics (e.g., age, gender, BMI, the identity of smoker or non-smoker) that do not change across the four longitudinal measurements.
 
-dh.24h <- ggplot(dat1, aes(y =log(dh.ad) , x =no2exp.24h)) +
-  geom_point(shape=1,aes(colour=scenarios), size = 2) +
-  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
-  geom_smooth(method="lm",se=FALSE,color="black")+
-  #geom_line(aes(y = predict(mo5)),size=1)+ 
-  labs(x = "O3 exposure in 24 hours", y = "") +
-  ylim(0,3)
-print(dh.24h)
+I used NO2 exposure as predicting variables and log-transformed urinary biomarkers as dependent variables. For each biomarker, I built 4 models to the exposure over the periods of 12h, 24h, one week, and two weeks. I used a backward stepwise model selection method to select the co-variables for each model. The co-variables that I tested in the models were last meal, the start of the workday, respiratory infection status, menstruation, and the time of second-hand exposure. I also tested the SO2 exposure, ozone exposure and PM2.5 exposure, the average temperature and humidity during a corresponding period. 
 
-dh.1w <- ggplot(dat1, aes(y =log(dh.ad) , x =no2exp.1w)) +
-  geom_point(shape=1,aes(colour=scenarios), size = 2) +
-  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
-  geom_smooth(method="lm",se=FALSE,color="black")+
-  #geom_line(aes(y = predict(mo5)),size=1)+ 
-  labs(x = "O3 exposure in one week", y = "log(11dhTxB2 ng/ml)") +
-  ylim(0,3) 
-print(dh.1w)
+Both 12-hour, 24-hour, 1-week and 2-week NO2 exposure showed significant correlations with the level of urinary 8-isoprostane, especially the 2-week NO2 exposure. 
+*One IQR (7.41 µg/m3) incremental change of 12-h NO2 exposure was associated with an increase of 8-isoprostane level by 19.45% ( 95% Cl: 14.37%, 24.55%, F value=14.99, p-value <0.001). The Adjusted R-squared =0.4121, which is the fraction of total variance explained by the model
+*One IQR (8.64 µg/m3) incremental change of 24-h NO2 exposure was associated an increase in 8-isoprostane level by 27.69% ( 95% Cl: 20.50%, 34.95% , F value=15.16,  p-value <0.001 ). The Adjusted R-squared = 0.4160, which is the fraction of total variance explained by the model.
+*One IQR (4.47 µg/m3) incremental change of 1-week NO2 exposure was associated with an increase in 8-isoprostane level by 25.15% ( 95% Cl: 14.14%,36.31%, F value=5.30p-value <0.05 ). The Adjusted R-squared = 0.4014, which is the fraction of total variance explained by the model
+*One IQR (2.74 µg/m3) incremental change of 2-week NO2 exposure was associated with an increase in 8-isoprostane level by 15.68% ( 95% Cl: 8.87%,22.65%, F value=5.47p-value <0.05 ). The Adjusted R-squared = 0.4021, which is the fraction of total variance explained by the model.
 
-dh.2w <- ggplot(dat1, aes(y =log(dh.ad) , x =no2exp.2w)) +
-  geom_point(shape=1,aes(colour=scenarios), size = 2) +
-  scale_colour_manual(values=c(`1`='blue', `2`='red',`3`='orange', `4`='darkgreen'))+
-  geom_smooth(method="lm",se=FALSE,color="black")+
-  #geom_line(aes(y = predict(mo5)),size=1)+ 
-  labs(x = "NO2 exposure in two weeks", y = "") +
-  ylim(0,3) 
-print(dh.2w)
+# Summary and Conclusions
+Short term NO2 exposure was associated with urinary 8-isoprostane. This finding meet my hypothesis. Urinary 8-isoprostane indicates the lipid peroxidation from the whole body, reflecting the systemic oxidative stress. It indicates short term NO2 exposure can cause signifiant higher systemic oxidative stress. 
 
-plot_grid(dh.12h, dh.24h,dh.1w,dh.2w, nrow = 2, align = 'h')
-plot_grid(is.12h, dh.12h, nrow = 1, align = 'h')
-```
+\newpage
+
+# References
+Mölter, A., Agius, R. M., de Vocht, F., Lindley, S., Gerrard, W., Lowe, L., ... & Simpson, A. (2013). Long-term exposure to PM10 and NO2 in association with lung volume and airway resistance in the MAAS birth cohort. Environmental health perspectives, 121(10), 1232-1238.
+Collart, P., Dubourg, D., Levêque, A., Sierra, N. B., & Coppieters, Y. (2018). Short-term effects of nitrogen dioxide on hospital admissions for cardiovascular disease in Wallonia, Belgium. International journal of cardiology, 255, 231-236.
+Takenoue, Y., Kaneko, T., Miyamae, T., Mori, M., & Yokota, S. (2012). Influence of outdoor NO2 exposure on asthma in childhood: Meta‐analysis. Pediatrics International, 54(6), 762-769.
+Hashemzadeh, B., Idani, E., Goudarzi, G., Ankali, K. A., Sakhvidi, M. J. Z., Babaei, A. A., ... & Neisi, A. (2019). Effects of PM2. 5 and NO2 on the 8-isoprostane and lung function indices of FVC and FEV1 in students of Ahvaz city, Iran. Saudi journal of biological sciences, 26(3), 473-480.
+Black, C. N., Bot, M., Révész, D., Scheffer, P. G., & Penninx, B. (2017). The association between three major physiological stress systems and oxidative DNA and lipid damage. Psychoneuroendocrinology, 80, 56-66.
+Lakshmi, S. V., Padmaja, G., Kuppusamy, P., & Kutala, V. K. (2009). Oxidative stress in cardiovascular disease.
+Zanolin, M. E., Chamitava, L., Degan, P., Pasini, A., Fratta-Pasini, A., Nicolis, M., ... & De Marco, R. (2015). Biomarkers of oxidative stress in chronic respiratory diseases.
+Danielsen, P. H., Loft, S., Kocbach, A., Schwarze, P. E., & Møller, P. (2009). Oxidative damage to DNA and repair induced by Norwegian wood smoke particles in human A549 and THP-1 cell lines. Mutation Research/Genetic Toxicology and Environmental Mutagenesis, 674(1-2), 116-122.
+Nuernberg, A. M., Boyce, P. D., Cavallari, J. M., Fang, S. C., Eisen, E. A., & Christiani, D. C. (2008). Urinary 8-isoprostane and 8-OHdG concentrations in boilermakers with welding exposure. Journal of occupational and environmental medicine, 50(2), 182-189.
+Hashemzadeh, B., Idani, E., Goudarzi, G., Ankali, K. A., Sakhvidi, M. J. Z., Babaei, A. A., ... & Neisi, A. (2019). Effects of PM2. 5 and NO2 on the 8-isoprostane and lung function indices of FVC and FEV1 in students of Ahvaz city, Iran. Saudi journal of biological sciences, 26(3), 473-480.
+Patel, M. M., Chillrud, S. N., Deepti, K. C., Ross, J. M., & Kinney, P. L. (2013). Traffic-related air pollutants and exhaled markers of airway inflammation and oxidative stress in New York City adolescents. Environmental research, 121, 71-78.

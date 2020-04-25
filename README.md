@@ -3,7 +3,7 @@ NO2 exposure and its health effect data sets.
 
 ## Summary
 
-This repository was prepared for the final project of Environmental Data Analytics (ENV 872L) at Duke University, Spring 2020. It includes one folder with four data sets. The goal is to analyze the association between exposure to NO2 and the level of two urinary biomarkers, 8-isoprostane, 11-dehydrothromboxane B2 (11dhTxB2)
+This repository was prepared for the final project of Environmental Data Analytics (ENV 872L) at Duke University, Spring 2020. It includes one folder with four data sets. The goal is to analyze the association between exposure to NO2 and the level of  urinary biomarkers 8-isoprostane
 
 
 ## Investigators
@@ -11,14 +11,14 @@ The investigator is Yang Wang, who is a master student at Duke University. The c
 
 ## Keywords
 
-NO2, air pollutants, exposure to NO2, health effect, 8-isoprostane, 11-dehydrothromboxane B2 (11dhTxB2)
+NO2, air pollutants, exposure to NO2, health effect, 8-isoprostane
 
 ## Database Information
 All the data are from Jim Zhang's lab. Jim Zhang is a professor at the Nicholas School of Environment at Duke University
 
 
 ## Folder structure, file formats, and naming conventions 
-This data repository only includes one folder called "the data for the final project". This folder includes four data sets and they are all in the format of excel.csv files. The file 8-iso is the data set of urinary biomarker 8-isoprostane. The file 11-dh is the data set of urinary biomarker 11-dehydrothromboxane B2 (11dhTxB2). The file urine_info is the data set that has information about the subjects who provided the urine samples. The urine list is a data set with lists of information of sample ID, subject ID and visits.
+This data repository only includes one folder called "the data for the final project". This folder includes three raw data sets and they are all in the format of excel.csv files. The file 8-iso is the data set of urinary biomarker 8-isoprostane.  The file urine_info is the data set that has information about the subjects who provided the urine samples. The urine list is a data set with lists of information of sample ID, subject ID and visits.
 
 
 ## Metadata
@@ -30,7 +30,7 @@ No.	Column	Column Name	 Meaning	                           units	    class of th
 2	    2	    Subject ID	 the identity number of the subjects	NA	       integer
 3	    3	    visit	the    number of the 4 visits (1,2,3 or 4)	NA	       integer
 
-8-iso & 11-dh				
+8-iso 			
 No.	Column	Column Name	    Meaning                        	            Units	      Class of the data
 1	   2	    Sample ID       the identity number of the samples	         NA	        integer
 2	   5	    Calculated Conc	the concentration tested by the machine      ng/ml	    numeric
@@ -79,4 +79,4 @@ No scripts and codes.
 
 ## Quality assurance/quality control
 
-The limit of detection for 8-isoprostane was 0.016ng/ml. The minimum detection limit for 11-dhTxB2 is 0.065ng/ml. Any value which is below 0.016 in the column of calculated Conc in 8-is data set should be excluded as an error. Any value which is below 0.065 in the column of calculated Conc in 11-dh data set should be excluded as an error.
+The limit of detection for 8-isoprostane was 0.016ng/ml. Any value which is below 0.016 in the column of calculated Conc in 8-is data set should be excluded as an error. 
