@@ -6,7 +6,7 @@ output:
     fig_caption: yes
     number_sections: yes
 geometry: margin=2.54cm
-title: "Applying Urinary Biomarkers of 11-dehydrothromboxane B2 and 8-isoprostane to Understand the Health Effects of NO2 Exposure"
+title: "Applying Urinary Biomarkers  8-isoprostane to Understand the Health Effects of NO2 Exposure"
 subtitle: "https://github.com/Yang190809/data_repository_yang"
 author: "Yang Wang"
 fontsize: 12pt
@@ -19,6 +19,10 @@ Mounting evidence shows that exposure to NO2 generates oxidative stress. Oxidati
 
 \newpage
 \tableofcontents 
+\newpage
+\listoftables 
+\newpage
+\listoffigures 
 
 
 \newpage
@@ -45,7 +49,7 @@ Column Name	| Meaning	                            |units |	  class of the data
  Sample ID	|   the identity number of the samples	  |NA	 |      integer
 Subject ID |	 the identity number of the subjects	|NA	    |   integer
  visit	  |   the number of the 4 visits (1,2,3 or 4)	|NA	  |     integer
-\center __Table 1__ \center 
+\kable(mytable,caption="Description of variables")
 
 ## 8-isoprostane data set
 The 8-isoprostane data set has information about 8-isoprostane concentration tested in the mass spectrum and the concentration of 8-isoprostane in original urine samples. The limit of detection for 8-isoprostane was 0.016ng/ml. Any value which is below 0.016 in the column of calculated Conc in 8-is data set should be excluded as an error.
@@ -55,7 +59,7 @@ Column Name	|    Meaning                                   |    Units	  |    Cla
   Sample ID |      the identity number of the samples	|         NA	   |     integer
  Calculated Conc|	the concentration tested by the machine   |   ng/ml	 |   numeric
 Sample Conc	 |   the concentration in the original urine|	     ng/ml	  |  numeric
-\center __Table 2__ \center 
+\kable(mytable,caption="Description of variables") 
 
 ## Urine Info	
 The urine info is the data set that has information about subjects characteristics and average pollutant exposure (NO2, SO2, O3, and PM2.5)over the periods of 12 hours, 24 hours, one week, and two weeks. It also includes average temperature and humidity over the periods of 12 hours, 24 hours, one week, and two weeks. 
@@ -76,14 +80,14 @@ no2exp.12h|	the exposure of NO2 in 12h|	ug/m3	|numeric
 so2exp.12h|	the exposure of SO2 in 12h	|ug/m3|	numeric
 Temp.12h|	temperature in 12h|	ug/m3	|numeric
 RHx.12h|	humidity in 12h	|ug/m3|	numeric
-\center __Table 3__ \center 
+\kable(mytable,caption="Description of variables")
 
 ## Data Wrangling
 
 My data wrangling started with loading the data set of 8-isoprostane and changing the column names. Then I merged this data set with the urine list to match the sample ID with subjects ID and visit. Then this merged data was merged with the urine info data set using the subject ID and visit as the matching keys. After the second merging, the rows with NAs were removed. Then I calculated the normalized 8-isoprostane using the specific urine gravity. This normalization can adjust the dilution in the urine. I obtained my final data by selecting columns that are relevant to my research question. Finally, the processed data was saved into a processed data folder.
-![Alt text](C:/Users/26059/OneDrive/Desktop/ENV 872 R/Yang_ENV872/directory_yang/table.png)
-\center __Table 4__ \center 
 
+
+\kable(mytable,caption="Statistics of 8-isoprostane and log(8-isoprostane)")
 \newpage
 **1. Data wrangling**
 ```{r setup, warning=FALSE, message=FALSE}
@@ -127,7 +131,7 @@ mean.cre
 full.data$is.ad <- (full.data$is.conc/(1-full.data$USG))*(1-mean.cre)
 
 #select useful colums
-final.dat<- select(full.data, Sample.ID, Subject.ID, is.ad, is.conc, is.origin, group,	COLD,	MNST,	last.ate,	wkday.start,go.home,Smoker,go.home, dt_smoke,	o3exp.12h,	pmexp.12h,no2exp.12h,	so2exp.12h,	Temp.12h,	RHx.12h,	o3exp.24h,	pmexp.24h,	no2exp.24h,	so2exp.24h,	Temp.24h,	RHx.24h,	o3exp.1w,	pmexp.1w,	no2exp.1w,	so2exp.1w,	Temp.1w,	RHx.1w,	o3exp.2w,	pmexp.2w,	no2exp.2w,	so2exp.2w,	Temp.2w,	RHx.2w )
+final.dat<- select(full.data, Sample.ID, Subject.ID, is.ad, is.conc, is.origin, gender,	COLD,	MNST,	last.ate,	wkday.start,dt_smoke,	o3exp.12h,	pmexp.12h,no2exp.12h,	so2exp.12h,	Temp.12h,	RHx.12h,	o3exp.24h,	pmexp.24h,	no2exp.24h,	so2exp.24h,	Temp.24h,	RHx.24h,	o3exp.1w,	pmexp.1w,	no2exp.1w,	so2exp.1w,	Temp.1w,	RHx.1w,	o3exp.2w,	pmexp.2w,	no2exp.2w,	so2exp.2w,	Temp.2w,	RHx.2w )
 
 #save processed data set
 write.csv(final.dat, row.names = FALSE, file = "processed_data/final.dat.csv")
@@ -240,20 +244,15 @@ r.squaredGLMM (mo4.1)
 
 ```
 
-
 # Exploratory Analysis 
 The Shapiro tests showed that concentrations of urinary 8-isoprostane are not normalized (p-value < 2.2e-16). The Shapiro tests showed that concentrations of log-scale urinary 8-isoprostane are still not normalized (p-value < 2.2e-16). To build linear models, I need to use the more normalized log-transformed concentrations of urinary 8-isoprostane. The distribution of data in log(8-isoprostane) (Figure 2)looks more normalized than the distribution of data of 8-isoprostane in (Figure 1).
-```{r,warning=FALSE, message=FALSE,echo=FALSE}
+```{r,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Plot  of  8-isoprostane"}
 is.plot1 <- boxplot(dat1$is.ad,colors="darkblue",ylab="8-isoprostane ng/ml")
 ```
-Figure 5: Plot  of  8-isoprostane
 
-```{r,warning=FALSE, message=FALSE,echo=FALSE}
-is.plot1 <- boxplot(log(dat1$is.ad),color="darkblue",ylab="log(8-isoprostane ng/ml)")
+```{r,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Plot  of  log(8-isoprostane)"}
+is.plot2 <- boxplot(log(dat1$is.ad),color="darkblue",ylab="log(8-isoprostane ng/ml)")
 ```
-Figure 6: Plot of log(8-isoprostane)
-
-
 # Analysis
 I used linear mixed models with participant-specific intercepts. The inclusion of participants as a variable in mixed-effects models account for the correlation of repeated measurements from the same individuals and precludes the need to control for participant characteristics (e.g., age, gender, BMI, the identity of smoker or non-smoker) that do not change across the four longitudinal measurements.
 
@@ -267,64 +266,63 @@ p2<-plot(mo2.1)
 p3<-plot(mo3.1)
 p4<-plot(mo1.1)
 ```
-Figure 3: diagnostic plots of four final models
-```{r,warning=FALSE, message=FALSE,echo=FALSE}
+
+```{r,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Diagnostic plots of four final models"}
 plot_grid(p1,p2,p3,p4, nrow = 2, align = 'h')
 ```
 Both 12-hour, 24-hour, 1-week and 2-week NO2 exposure showed significant correlations with the level of urinary 8-isoprostane, especially the 2-week NO2 exposure. 
 
 ## Result 1
-```{r,warning=FALSE, message=FALSE,echo=FALSE}
+```{r,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Relationship between log(8-isoprostane) and 12-hour NO2 exposure"}
 is.12h <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.12h)) +
   geom_point(shape=1, size = 2) +
-   geom_point(shape=1, size = 2,color="darkgrey") +
+   geom_point(shape=1, size = 2,color=gender) +
   geom_smooth(method="lm",se=FALSE,color="black")+
   labs(x = "NO2 exposure in 12 hours", y = "log(8-isoprostane ng/ml)") +
     theme(legend.position="top")+
   ylim(0,5)
 print(is.12h)
 ```
-Figure 4:Relationship between log(8-isoprostane) and 12-hour NO2 exposure.
 
 There is a significant positive relationship between 12-hour NO2 exposure and log(8-isoprostane)(Figure 7).One IQR (7.41 µg/m3) incremental change of 12-h NO2 exposure was associated with an increase of 8-isoprostane level by 19.45% ( 95% Cl: 14.37%, 24.55%, F value=14.99, p-value <0.001). The Adjusted R-squared =0.4121, which is the fraction of total variance explained by the model
 
 ## Result 2
-```{r,warning=FALSE, message=FALSE,echo=FALSE}
+```{r,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Relationship between log(8-isoprostane) and 24-hour NO2 exposure"}
 is.24h <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.24h)) +
   geom_point(shape=1, size = 2) +
-   geom_point(shape=1, size = 2,color="darkgrey") +
+   geom_point(shape=1, size = 2,color=gender) +
   geom_smooth(method="lm",se=FALSE,color="black")+
   labs(x = "NO2 exposure in 24 hours", y = "log(8-isoprostane ng/ml)") +
     theme(legend.position="top")+
   ylim(0,5)
 print(is.24h)
 ```
-Figure 5:Relationship between log(8-isoprostane) and 24-hour NO2 exposure.
+
 
 There is a signifcant positive relationship between 24-hour NO2 exposure and log(8-isoprostane)(Figure 8).One IQR (8.64 µg/m3) incremental change of 24-h NO2 exposure was associated an increase in 8-isoprostane level by 27.69% ( 95% Cl: 20.50%, 34.95% , F value=15.16,  p-value <0.001 ). The Adjusted R-squared = 0.4160, which is the fraction of total variance explained by the model.
 
 
 ## Result 3
-```{r,warning=FALSE, message=FALSE,echo=FALSE}
+```{r,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Relationship between log(8-isoprostane) and 1-week NO2 exposure"}
 is.1w <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.1w)) +
   geom_point(shape=1, size = 2) +
-   geom_point(shape=1, size = 2,color="darkgrey") +
+   geom_point(shape=1, size = 2,color=gender) +
   geom_smooth(method="lm",se=FALSE,color="black")+
   labs(x = "NO2 exposure in one week", y = "log(8-isoprostane ng/ml)") +
     theme(legend.position="top")+
   ylim(0,5)
 print(is.1w)
 ```
-Figure 6:Relationship between log(8-isoprostane) and 1-week NO2 exposure.
+
 
 There is a significant positive relationship between 1-week NO2 exposure and log(8-isoprostane)(Figure 9).One IQR (4.47 µg/m3) incremental change of 1-week NO2 exposure was associated with an increase in 8-isoprostane level by 25.15% ( 95% Cl: 14.14%,36.31%, F value=5.30, p-value <0.05 ). The Adjusted R-squared = 0.4014, which is the fraction of total variance explained by the model.
 
 
 ## Result 4
-```{r,warning=FALSE, message=FALSE,echo=FALSE}
+```{r,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Relationship between log(8-isoprostane) and 2-week NO2 exposure"}
 is.2w <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.2w)) +
   geom_point(shape=1,size = 2) +
-   geom_point(shape=1, size = 2,color="darkgrey") +
+   geom_point(shape=1, size = 2,color=gender) +
   geom_smooth(method="lm",se=FALSE,color="black")+
   labs(x = "NO2 exposure in 2 weeks", y = "log(8-isoprostane ng/ml)") +
     theme(legend.position="top")+
@@ -332,7 +330,7 @@ is.2w <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.2w)) +
 print(is.2w)
 
 ```
-Figure 7:Relationship between log(8-isoprostane) and 2-week NO2 exposure
+
 There is a significant positive relationship between 2-week NO2 exposure and log(8-isoprostane)(Figure 10).One IQR (2.74 µg/m3) incremental change of 2-week NO2 exposure was associated with an increase in 8-isoprostane level by 15.68% ( 95% Cl: 8.87%,22.65%, F value=5.47, p-value <0.05 ). The Adjusted R-squared = 0.4021, which is the fraction of total variance explained by the model.
 
 # Summary and Conclusions
