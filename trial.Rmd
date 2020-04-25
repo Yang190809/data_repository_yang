@@ -1,4 +1,3 @@
-
 ---
 output: 
   pdf_document:
@@ -239,8 +238,6 @@ r.squaredGLMM (mo4.1)
 (exp(0.05572 -0.02382)-1)*no2.2w
 
 ```
-
-
 # Exploratory Analysis 
 The Shapiro tests showed that concentrations of urinary 8-isoprostane are not normalized (p-value < 2.2e-16). The Shapiro tests showed that concentrations of log-scale urinary 8-isoprostane are still not normalized (p-value < 2.2e-16). To build linear models, I need to use the more normalized log-transformed concentrations of urinary 8-isoprostane. The distribution of data in log(8-isoprostane) (Figure 2)looks more normalized than the distribution of data of 8-isoprostane in (Figure 1).
 ```{r,warning=FALSE, message=FALSE,echo=FALSE}
@@ -261,6 +258,7 @@ I used NO2 exposure as predicting variables and log-transformed urinary biomarke
 
 
 With the stepAIC function, the best models were chosen with the lowest AIC. The vif tests show that there is no model with excess intercorrelation in the predicting variables. Figure 3 shows that all four diagnostic plots have the shape of a triangle. The higher the fitted value is, the higher the residue is. This residue is a result of skewed distribution of log scaled of the predicting variable .In general, the residue distribution is not bad. No value is bigger than an absolute value of 2.5.
+
 ```{r,warning=FALSE, message=FALSE,include=FALSE}
 p1<-plot(mo1.1)
 p2<-plot(mo2.1)
@@ -284,71 +282,4 @@ is.12h <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.12h)) +
   ylim(0,5)
 print(is.12h)
 ```
-Figure 4:Relationship between log(8-isoprostane) and 12-hour NO2 exposure.
 
-There is a significant positive relationship between 12-hour NO2 exposure and log(8-isoprostane)(Figure 7).One IQR (7.41 µg/m3) incremental change of 12-h NO2 exposure was associated with an increase of 8-isoprostane level by 19.45% ( 95% Cl: 14.37%, 24.55%, F value=14.99, p-value <0.001). The Adjusted R-squared =0.4121, which is the fraction of total variance explained by the model
-
-## Result 2
-```{r,warning=FALSE, message=FALSE,echo=FALSE}
-is.24h <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.24h)) +
-  geom_point(shape=1, size = 2) +
-   geom_point(shape=1, size = 2,color="darkgrey") +
-  geom_smooth(method="lm",se=FALSE,color="black")+
-  labs(x = "NO2 exposure in 24 hours", y = "log(8-isoprostane ng/ml)") +
-    theme(legend.position="top")+
-  ylim(0,5)
-print(is.24h)
-```
-Figure 5:Relationship between log(8-isoprostane) and 24-hour NO2 exposure.
-
-There is a signifcant positive relationship between 24-hour NO2 exposure and log(8-isoprostane)(Figure 8).One IQR (8.64 µg/m3) incremental change of 24-h NO2 exposure was associated an increase in 8-isoprostane level by 27.69% ( 95% Cl: 20.50%, 34.95% , F value=15.16,  p-value <0.001 ). The Adjusted R-squared = 0.4160, which is the fraction of total variance explained by the model.
-
-
-## Result 3
-```{r,warning=FALSE, message=FALSE,echo=FALSE}
-is.1w <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.1w)) +
-  geom_point(shape=1, size = 2) +
-   geom_point(shape=1, size = 2,color="darkgrey") +
-  geom_smooth(method="lm",se=FALSE,color="black")+
-  labs(x = "NO2 exposure in one week", y = "log(8-isoprostane ng/ml)") +
-    theme(legend.position="top")+
-  ylim(0,5)
-print(is.1w)
-```
-Figure 6:Relationship between log(8-isoprostane) and 1-week NO2 exposure.
-
-There is a significant positive relationship between 1-week NO2 exposure and log(8-isoprostane)(Figure 9).One IQR (4.47 µg/m3) incremental change of 1-week NO2 exposure was associated with an increase in 8-isoprostane level by 25.15% ( 95% Cl: 14.14%,36.31%, F value=5.30, p-value <0.05 ). The Adjusted R-squared = 0.4014, which is the fraction of total variance explained by the model.
-
-
-## Result 4
-```{r,warning=FALSE, message=FALSE,echo=FALSE}
-is.2w <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.2w)) +
-  geom_point(shape=1,size = 2) +
-   geom_point(shape=1, size = 2,color="darkgrey") +
-  geom_smooth(method="lm",se=FALSE,color="black")+
-  labs(x = "NO2 exposure in 2 weeks", y = "log(8-isoprostane ng/ml)") +
-    theme(legend.position="top")+
-  ylim(0,5)
-print(is.2w)
-
-```
-Figure 7:Relationship between log(8-isoprostane) and 2-week NO2 exposure
-There is a significant positive relationship between 2-week NO2 exposure and log(8-isoprostane)(Figure 10).One IQR (2.74 µg/m3) incremental change of 2-week NO2 exposure was associated with an increase in 8-isoprostane level by 15.68% ( 95% Cl: 8.87%,22.65%, F value=5.47, p-value <0.05 ). The Adjusted R-squared = 0.4021, which is the fraction of total variance explained by the model.
-
-# Summary and Conclusions
-Short term NO2 exposure was associated with urinary 8-isoprostane. This finding meet my hypothesis. Urinary 8-isoprostane indicates the lipid peroxidation from the whole body, reflecting the systemic oxidative stress. It indicates short term NO2 exposure can cause signifiant higher systemic oxidative stress. 
-
-\newpage
-
-# References
-Mölter, A., Agius, R. M., de Vocht, F., Lindley, S., Gerrard, W., Lowe, L., ... & Simpson, A. (2013). Long-term exposure to PM10 and NO2 in association with lung volume and airway resistance in the MAAS birth cohort. Environmental health perspectives, 121(10), 1232-1238.
-Collart, P., Dubourg, D., Levêque, A., Sierra, N. B., & Coppieters, Y. (2018). Short-term effects of nitrogen dioxide on hospital admissions for cardiovascular disease in Wallonia, Belgium. International journal of cardiology, 255, 231-236.
-Takenoue, Y., Kaneko, T., Miyamae, T., Mori, M., & Yokota, S. (2012). Influence of outdoor NO2 exposure on asthma in childhood: Meta‐analysis. Pediatrics International, 54(6), 762-769.
-Hashemzadeh, B., Idani, E., Goudarzi, G., Ankali, K. A., Sakhvidi, M. J. Z., Babaei, A. A., ... & Neisi, A. (2019). Effects of PM2. 5 and NO2 on the 8-isoprostane and lung function indices of FVC and FEV1 in students of Ahvaz city, Iran. Saudi journal of biological sciences, 26(3), 473-480.
-Black, C. N., Bot, M., Révész, D., Scheffer, P. G., & Penninx, B. (2017). The association between three major physiological stress systems and oxidative DNA and lipid damage. Psychoneuroendocrinology, 80, 56-66.
-Lakshmi, S. V., Padmaja, G., Kuppusamy, P., & Kutala, V. K. (2009). Oxidative stress in cardiovascular disease.
-Zanolin, M. E., Chamitava, L., Degan, P., Pasini, A., Fratta-Pasini, A., Nicolis, M., ... & De Marco, R. (2015). Biomarkers of oxidative stress in chronic respiratory diseases.
-Danielsen, P. H., Loft, S., Kocbach, A., Schwarze, P. E., & Møller, P. (2009). Oxidative damage to DNA and repair induced by Norwegian wood smoke particles in human A549 and THP-1 cell lines. Mutation Research/Genetic Toxicology and Environmental Mutagenesis, 674(1-2), 116-122.
-Nuernberg, A. M., Boyce, P. D., Cavallari, J. M., Fang, S. C., Eisen, E. A., & Christiani, D. C. (2008). Urinary 8-isoprostane and 8-OHdG concentrations in boilermakers with welding exposure. Journal of occupational and environmental medicine, 50(2), 182-189.
-Hashemzadeh, B., Idani, E., Goudarzi, G., Ankali, K. A., Sakhvidi, M. J. Z., Babaei, A. A., ... & Neisi, A. (2019). Effects of PM2. 5 and NO2 on the 8-isoprostane and lung function indices of FVC and FEV1 in students of Ahvaz city, Iran. Saudi journal of biological sciences, 26(3), 473-480.
-Patel, M. M., Chillrud, S. N., Deepti, K. C., Ross, J. M., & Kinney, P. L. (2013). Traffic-related air pollutants and exhaled markers of airway inflammation and oxidative stress in New York City adolescents. Environmental research, 121, 71-78.
