@@ -25,54 +25,36 @@ This data repository only includes one folder called "the data for the final pro
 The meaning of the columns as well as units and class of the data in each foler is listed belowe. Column names without descriptors are irrelevant to this study.
 
 For data set "Urine List					
-No.	Column	Column Name	 Meaning	                           units	    class of the data
-1	    1	    Sample ID	   the identity number of the samples	  NA	       integer
-2	    2	    Subject ID	 the identity number of the subjects	NA	       integer
-3	    3	    visit	the    number of the 4 visits (1,2,3 or 4)	NA	       integer
-
+Column Name	| Meaning	                            |units |	  class of the data
+------------|-------------------------------------|----- |---------------------
+ Sample ID	|   the identity number of the samples	  |NA	 |      integer
+Subject ID |	 the identity number of the subjects	|NA	    |   integer
+ visit	  |   the number of the 4 visits (1,2,3 or 4)	|NA	  |     integer
+ 
 8-iso 			
-No.	Column	Column Name	    Meaning                        	            Units	      Class of the data
-1	   2	    Sample ID       the identity number of the samples	         NA	        integer
-2	   5	    Calculated Conc	the concentration tested by the machine      ng/ml	    numeric
-3	   6	    Sample Conc	    the concentration in the original urine	     ng/ml	    numeric
+Column Name	|    Meaning                                   |    Units	  |    Class of the data
+------------|----------------------------------------------|------------|---------------------
+  Sample ID |      the identity number of the samples	|         NA	   |     integer
+ Calculated Conc|	the concentration tested by the machine   |   ng/ml	 |   numeric
+Sample Conc	 |   the concentration in the original urine|	     ng/ml	  |  numeric
 
 Urine Info					
-No.	Column	Column name	  Meaning	                                Units	 Class of the data
-1   1	      Sample_ID	    the identity number of the samples    	NA	    integer
-2	  2	      Subject ID	  the identity number of the subjects   	NA	    integer
-3	  4	      visit	        the number of the 4 visits (1,2,3 or 4)	NA	    integer
-4	  5	      group	        group, A or B	NA	category
-5	  6	      COLD	        cold ( represent respiratory infection)	NA	    category
-6	  7	      MNST	        menstruation                           	NA	    category
-7	  8	      last.ate    	the hours to the last meal	            hours	  integer
-8	  9	      wkday.start 	the day that the subject start their work	NA  	category
-9	  21	   dt_smoke	      second-hand smoke exposure in hours	    hours	  numeric
-10	22	    USG	urine     specific gravity	                      g/ml	  numeric
-11	31    	o3exp.12h	    the exposure of ozone in 12h	          ug/m3	  numeric
-12	32    	pmexp.12h	    the exposure of PM2.5 in 12h	          ug/m3	  numeric
-13	33	    no2exp.12h  	the exposure of NO2 in 12h	            ug/m3	  numeric
-14	34    	so2exp.12h  	the exposure of SO2 in 12h	            ug/m3	  numeric
-15	35	    Temp.12h    	average temperature in 12h              ug/m3	  numeric
-16	36	    RHx.12h	      average humidity in 12h	                ug/m3	  numeric
-17	41    	o3exp.24h   	the exposure of ozone in 24h           	ug/m3	  numeric
-18	42    	pmexp.24h   	the exposure of PM2.5 in 24h	          ug/m3	  numeric
-19	43    	no2exp.24h	  the exposure of NO2 in 24h	            ug/m3 	numeric
-20	44    	so2exp.24h	  the exposure of SO2 in 24h	            ug/m3 	numeric
-21	45    	Temp.24h	    average temperature in 24h	            ug/m3 	numeric
-22	46    	RHx.24h	      average humidity in 24h	                ug/m3	  numeric
-23	51    	o3exp.1w	    the exposure of ozone in one week	      ug/m3   numeric
-24	52	    pmexp.1w	    the exposure of PM2.5 in one week	      ug/m3	  numeric
-25	53    	no2exp.1w	    the exposure of NO2 in one week	        ug/m3 	numeric
-26	54    	so2exp.1w	    the exposure of SO2 in one week       	ug/m3	  numeric
-27	55    	Temp.1w	      average temperature in one week	        ug/m3	  numeric
-28	56	    RHx.1w	      average humidity in one week	          ug/m3	  numeric
-29	61    	o3exp.2w	    the exposure of ozone in two weeks	    ug/m3	  numeric
-30	62    	pmexp.2w	    the exposure of PM2.5 in two weeks	    ug/m3	  numeric
-31	63    	no2exp.2w	    the exposure of NO2 in two weeks	      ug/m3	  numeric
-32	64    	so2exp.2w	    the exposure of SO2 in two weeks	      ug/m3	  numeric
-33	65    	Temp.2w	      average temperature in two weeks	      ug/m3	  numeric
-34	66	    RHx.2w	      average humidity in two weeks	          ug/m3 	numeric
-
+Column name|	Meaning                             |	Units|	Class of the data
+---------- |--------------------------------------|----- |---------------------
+ample_ID  |	the identity number of the samples  |	NA |	integer            
+SubjectID  |	the identity number of the subjects| NA	|integer    
+COLD	|cold ( represent respiratory infection)|	NA|	category
+MNST	|menstration during visit|	NA|	category
+last.ate|	the hours to the last meal|	hours	|integer
+wkday.start|	the day that the subject start their work	|NA	|category
+dt_smoke|	second-hand smoke exposure in hours|	hours	|numeric
+USG	urine |specific gravity	|g/ml	|numeric
+o3exp.12h|	the exposure of ozone in 12h|	ug/m3	|numeric
+pmexp.12h	|the exposure of PM2.5 in 12h|	ug/m3|	numeric
+no2exp.12h|	the exposure of NO2 in 12h|	ug/m3	|numeric
+so2exp.12h|	the exposure of SO2 in 12h	|ug/m3|	numeric
+Temp.12h|	temperature in 12h|	ug/m3	|numeric
+RHx.12h|	humidity in 12h	|ug/m3|	numeric
 
 ## Scripts and code
 No scripts and codes.
