@@ -37,21 +37,22 @@ Among periods of 12-hour,24-hour,1-week and 2-weeks, which period has the most s
 
 # Dataset Information
 
+##Data Collection
 All the data are obtained from Jim Zhang's lab. The urine samples were collected from participants of a previously described study conducted in Changsha, China by Dr. Zhang and other researchers ( Day, D. B., et. al.,2018). The study recruited 89 healthy individuals (age>18years old) who were living and working at the Broad Company Campus and divided them into 2 groups, Group A (n = 36) and Group B (n = 53). The study periods include pre-intervention, intervention, and post-intervention, lasting 5 weeks. Urine samples were collected from each participant once during the pre-intervention, twice during the intervention, and once during the post-intervention. The study measured hourly indoor and outdoor concentrations of PM2.5, O3, NO2, and SO2, surveyed each participant’s time-activity, and calculated the participants’ exposure for each pollutant over 12h, 24h, 1 week and 2 week periods, which were counted backward from the visit points.
 
-The file 8-iso is the data set of urinary biomarker 8-isoprostane. The file urine_info is the data set that has information about the subjects who provided the urine samples. The urine list is a data set with lists of information of sample ID, subject ID and visits. The meaning of the columns as well as units and class of the data in each foler is listed below. Column names without descriptors are irrelevant to this study.
+The file 8-iso is the data set of urinary biomarker 8-isoprostane.The file urine_info is the data set that has information about the subjects who provided the urine samples. The urine list is a data set with lists of information of sample ID, subject ID and visits. The meaning of the columns as well as units and class of the data in each foler is listed below. Column names without descriptors are irrelevant to this study.
 
-## Urine list raw data set
-The urine list has the information about the sample ID, subject ID and visits.
+##Urine List
+The urine list is a data set with lists of information of sample ID, subject ID and visits. 
 
 Column Name	| Meaning	                            |units |	  class of the data
 ------------|-------------------------------------|----- |---------------------
  Sample ID	|   the identity number of the samples	  |NA	 |      integer
 Subject ID |	 the identity number of the subjects	|NA	    |   integer
  visit	  |   the number of the 4 visits (1,2,3 or 4)	|NA	  |     integer
-\kable(mytable,caption="Description of variables")
+kable(Table1,caption="Urine list raw data set") 
 
-## 8-isoprostane data set
+##8-isoprostane Data Set
 The 8-isoprostane data set has information about 8-isoprostane concentration tested in the mass spectrum and the concentration of 8-isoprostane in original urine samples. The limit of detection for 8-isoprostane was 0.016ng/ml. Any value which is below 0.016 in the column of calculated Conc in 8-is data set should be excluded as an error.
 
 Column Name	|    Meaning                                   |    Units	  |    Class of the data
@@ -59,10 +60,12 @@ Column Name	|    Meaning                                   |    Units	  |    Cla
   Sample ID |      the identity number of the samples	|         NA	   |     integer
  Calculated Conc|	the concentration tested by the machine   |   ng/ml	 |   numeric
 Sample Conc	 |   the concentration in the original urine|	     ng/ml	  |  numeric
-\kable(mytable,caption="Description of variables") 
 
-## Urine Info	
+kable(Table2,caption="8-isoprostane data set ") 
+
+##Urine Info Data Set
 The urine info is the data set that has information about subjects characteristics and average pollutant exposure (NO2, SO2, O3, and PM2.5)over the periods of 12 hours, 24 hours, one week, and two weeks. It also includes average temperature and humidity over the periods of 12 hours, 24 hours, one week, and two weeks. 
+
 
 Column name|	Meaning                             |	Units|	Class of the data
 ---------- |--------------------------------------|----- |---------------------
@@ -80,17 +83,17 @@ no2exp.12h|	the exposure of NO2 in 12h|	ug/m3	|numeric
 so2exp.12h|	the exposure of SO2 in 12h	|ug/m3|	numeric
 Temp.12h|	temperature in 12h|	ug/m3	|numeric
 RHx.12h|	humidity in 12h	|ug/m3|	numeric
-\kable(mytable,caption="Description of variables")
+
+kable(Table3,caption="Urine info	data set") 
+
 
 ## Data Wrangling
-
 My data wrangling started with loading the data set of 8-isoprostane and changing the column names. Then I merged this data set with the urine list to match the sample ID with subjects ID and visit. Then this merged data was merged with the urine info data set using the subject ID and visit as the matching keys. After the second merging, the rows with NAs were removed. Then I calculated the normalized 8-isoprostane using the specific urine gravity. This normalization can adjust the dilution in the urine. I obtained my final data by selecting columns that are relevant to my research question. Finally, the processed data was saved into a processed data folder.
 
-
-\kable(mytable,caption="Statistics of 8-isoprostane and log(8-isoprostane)")
 \newpage
+
 **1. Data wrangling**
-```{r setup, warning=FALSE, message=FALSE}
+```{r 4, warning=FALSE, message=FALSE}
 # Set working directory
 getwd()
 # Load packages
@@ -100,7 +103,12 @@ library(MuMIn)
 library(car)
 library(tidyverse)
 library(cowplot)
-library(RColorBrewer)
+library("stargazer")
+library(knitr)
+```
+
+
+```{r 6, warning=FALSE, message=FALSE}
 # Set ggplot theme
 mytheme <- theme_classic(base_size = 25) +
   theme(axis.text = element_text(color = "black"), 
@@ -131,15 +139,15 @@ mean.cre
 full.data$is.ad <- (full.data$is.conc/(1-full.data$USG))*(1-mean.cre)
 
 #select useful colums
-final.dat<- select(full.data, Sample.ID, Subject.ID, is.ad, is.conc, is.origin, gender,	COLD,	MNST,	last.ate,	wkday.start,dt_smoke,	o3exp.12h,	pmexp.12h,no2exp.12h,	so2exp.12h,	Temp.12h,	RHx.12h,	o3exp.24h,	pmexp.24h,	no2exp.24h,	so2exp.24h,	Temp.24h,	RHx.24h,	o3exp.1w,	pmexp.1w,	no2exp.1w,	so2exp.1w,	Temp.1w,	RHx.1w,	o3exp.2w,	pmexp.2w,	no2exp.2w,	so2exp.2w,	Temp.2w,	RHx.2w )
+final.dat<- select(full.data, Sample.ID, Subject.ID, is.ad, is.conc, is.origin, gender,	COLD,	MNST,	last.ate,	wkday.start,go.home, dt_smoke,	o3exp.12h,	pmexp.12h,no2exp.12h,	so2exp.12h,	Temp.12h,	RHx.12h,	o3exp.24h,	pmexp.24h,	no2exp.24h,	so2exp.24h,	Temp.24h,	RHx.24h,	o3exp.1w,	pmexp.1w,	no2exp.1w,	so2exp.1w,	Temp.1w,	RHx.1w,	o3exp.2w,	pmexp.2w,	no2exp.2w,	so2exp.2w,	Temp.2w,	RHx.2w )
 
 #save processed data set
 write.csv(final.dat, row.names = FALSE, file = "processed_data/final.dat.csv")
 ```
 
-**2.Explore the data**
-```{r,warning=FALSE, message=FALSE}
-library(ggplot2)
+##Explore the data
+```{r 7,warning=FALSE, message=FALSE}
+
 #load processed data set
 dat <- read.csv("processed_data/final.dat.csv")
 #remove outliers
@@ -150,26 +158,56 @@ dat1<- dat[-c(4,7,89,147,167),]
 shapiro.test(dat1$is.ad)
 shapiro.test(log(dat1$is.ad))
 #explore the data
+```
 
+```{r 8, include=FALSE}
+is.sum <- dat1 %>%
+  summarise(mean = mean(is.ad, na.rm = TRUE),
+            minimum = min(is.ad, na.rm = TRUE),
+            maximum = max(is.ad, na.rm = TRUE),
+            Standard.dev= sd(is.ad, na.rm = TRUE))
+
+log.is.sum<- dat1 %>%
+  summarise(mean = mean(log(is.ad), na.rm = TRUE),
+            minimum = min(log(is.ad), na.rm = TRUE),
+            maximum = max(log(is.ad), na.rm = TRUE),
+            Standard.dev= sd(log(is.ad), na.rm = TRUE))
+
+no2.sum1<-summary(dat1$no2exp.12h) 
+no2.sum2<-summary(dat1$no2exp.24h)
+no2.sum3<-summary(dat1$no2exp.1w)
+no2.sum4<-summary(dat1$no2exp.2w)
+```
+
+```{r 9, echo=FALSE}
+sub.dat<- dat1 %>%
+  select(no2exp.12h,no2exp.24h,no2exp.1w,no2exp.2w)
+table4<-stargazer(sub.dat ,type = "text", 
+            title = "Summary of Statistics",
+            covariate.labels = c("12-hour NO2 exposure","24-hour NO2 exposure","1-week NO2 exposure","2-week NO2 exposure"),
+            style = "qje",
+            out="sum.no2")
+kable(table4 ,caption="Summary of NO2 exposure") 
+```
+
+
+
+```{r 11,warning=FALSE, message=FALSE}
 #calculate IQR for each period
-sum3<-summary(dat$no2exp.12h)
-no2.12 <-sum3[5]-sum3[2]
+no2.12 <-no2.sum1[5]-no2.sum1[2]
 no2.12
-sum4<-summary(dat$no2exp.24h)
-no2.24 <-sum4[5]-sum4[2]
+no2.24 <-no2.sum2[5]-no2.sum2[2]
 no2.24
-sum5<-summary(dat$no2exp.1w)
-no2.1w <-sum5[5]-sum5[2]
+no2.1w <-no2.sum3[5]-no2.sum3[2]
 no2.1w
-sum6<-summary(dat$no2exp.2w)
-no2.2w <-sum6[5]-sum6[2]
+no2.2w <-no2.sum4[5]-no2.sum4[2]
 no2.2w
 ```
 
 **3.Build models**
 
 3.1 Build models for 12-hour NO2 exposure
-```{r,warning=FALSE, message=FALSE}
+```{r 12,warning=FALSE, message=FALSE}
 mo1<- lmer(log(is.ad) ~no2exp.12h+o3exp.12h+ pmexp.12h+so2exp.12h+Temp.12h+RHx.12h + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
 #find the best model with lowest AIC
 step(mo1)
@@ -194,7 +232,7 @@ dat[which(abs(res1.1) > 2.5),]
 
 
 3.2 Build models for 24-hour NO2 exposure
-```{r,warning=FALSE, message=FALSE}
+```{r 13,warning=FALSE, message=FALSE}
 mo2<- lmer(log(is.ad) ~ no2exp.24h+o3exp.24h+ pmexp.24h+so2exp.24h+Temp.24h+RHx.24h + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
 step(mo2)
 mo2.1<- lmer(log(is.ad) ~ no2exp.24h + o3exp.24h + (1 | Subject.ID),data=dat1)
@@ -211,7 +249,7 @@ dat[which(abs(res2.1) > 2.5),]
 ```
 
 3.3 Build models for 1-week NO2 exposure
-```{r,warning=FALSE, message=FALSE}
+```{r 14 ,warning=FALSE, message=FALSE}
 mo3<- lmer(log(is.ad) ~ no2exp.1w+o3exp.1w+ pmexp.1w+so2exp.1w+Temp.1w+RHx.1w + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
 step(mo3)
 mo3.1<- lmer(log(is.ad) ~ no2exp.1w + so2exp.1w + (1 | Subject.ID),data=dat1)
@@ -227,7 +265,7 @@ r.squaredGLMM (mo3.1)
 ```
 
 3.4 Build models for 2-week NO2 exposure
-```{r,warning=FALSE, message=FALSE}
+```{r 15,warning=FALSE, message=FALSE}
 
 mo4<- lmer(log(is.ad) ~ no2exp.2w+o3exp.2w+ pmexp.2w+so2exp.2w+Temp.2w+RHx.2w + last.ate +wkday.start+go.home+COLD+MNST+dt_smoke +(1|Subject.ID),data=dat1)
 summary(mo4)
@@ -246,13 +284,16 @@ r.squaredGLMM (mo4.1)
 
 # Exploratory Analysis 
 The Shapiro tests showed that concentrations of urinary 8-isoprostane are not normalized (p-value < 2.2e-16). The Shapiro tests showed that concentrations of log-scale urinary 8-isoprostane are still not normalized (p-value < 2.2e-16). To build linear models, I need to use the more normalized log-transformed concentrations of urinary 8-isoprostane. The distribution of data in log(8-isoprostane) (Figure 2)looks more normalized than the distribution of data of 8-isoprostane in (Figure 1).
-```{r,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Plot  of  8-isoprostane"}
+
+```{r 16,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Plot  of  8-isoprostane"}
 is.plot1 <- boxplot(dat1$is.ad,colors="darkblue",ylab="8-isoprostane ng/ml")
 ```
 
-```{r,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Plot  of  log(8-isoprostane)"}
+```{r 17,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Plot  of  log(8-isoprostane)"}
 is.plot2 <- boxplot(log(dat1$is.ad),color="darkblue",ylab="log(8-isoprostane ng/ml)")
 ```
+
+
 # Analysis
 I used linear mixed models with participant-specific intercepts. The inclusion of participants as a variable in mixed-effects models account for the correlation of repeated measurements from the same individuals and precludes the need to control for participant characteristics (e.g., age, gender, BMI, the identity of smoker or non-smoker) that do not change across the four longitudinal measurements.
 
@@ -260,23 +301,22 @@ I used NO2 exposure as predicting variables and log-transformed urinary biomarke
 
 
 With the stepAIC function, the best models were chosen with the lowest AIC. The vif tests show that there is no model with excess intercorrelation in the predicting variables. Figure 3 shows that all four diagnostic plots have the shape of a triangle. The higher the fitted value is, the higher the residue is. This residue is a result of skewed distribution of log scaled of the predicting variable .In general, the residue distribution is not bad. No value is bigger than an absolute value of 2.5.
-```{r,warning=FALSE, message=FALSE,include=FALSE}
+```{r 18,warning=FALSE, message=FALSE,include=FALSE}
 p1<-plot(mo1.1)
 p2<-plot(mo2.1)
 p3<-plot(mo3.1)
 p4<-plot(mo1.1)
 ```
 
-```{r,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Diagnostic plots of four final models"}
+```{r 19,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Diagnostic plots of four final models"}
 plot_grid(p1,p2,p3,p4, nrow = 2, align = 'h')
 ```
 Both 12-hour, 24-hour, 1-week and 2-week NO2 exposure showed significant correlations with the level of urinary 8-isoprostane, especially the 2-week NO2 exposure. 
 
 ## Result 1
-```{r,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Relationship between log(8-isoprostane) and 12-hour NO2 exposure"}
-is.12h <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.12h)) +
-  geom_point(shape=1, size = 2) +
-   geom_point(shape=1, size = 2,color=gender) +
+```{r 20 ,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Relationship between log(8-isoprostane) and 12-hour NO2 exposure"}
+is.12h <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.12h,color=dat1$gender)) +
+   geom_point(shape=1, size = 2) +
   geom_smooth(method="lm",se=FALSE,color="black")+
   labs(x = "NO2 exposure in 12 hours", y = "log(8-isoprostane ng/ml)") +
     theme(legend.position="top")+
@@ -287,10 +327,9 @@ print(is.12h)
 There is a significant positive relationship between 12-hour NO2 exposure and log(8-isoprostane)(Figure 7).One IQR (7.41 µg/m3) incremental change of 12-h NO2 exposure was associated with an increase of 8-isoprostane level by 19.45% ( 95% Cl: 14.37%, 24.55%, F value=14.99, p-value <0.001). The Adjusted R-squared =0.4121, which is the fraction of total variance explained by the model
 
 ## Result 2
-```{r,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Relationship between log(8-isoprostane) and 24-hour NO2 exposure"}
-is.24h <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.24h)) +
-  geom_point(shape=1, size = 2) +
-   geom_point(shape=1, size = 2,color=gender) +
+```{r 21,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Relationship between log(8-isoprostane) and 24-hour NO2 exposure"}
+is.24h <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.24h,color=dat1$gender)) +
+   geom_point(shape=1, size = 2) +
   geom_smooth(method="lm",se=FALSE,color="black")+
   labs(x = "NO2 exposure in 24 hours", y = "log(8-isoprostane ng/ml)") +
     theme(legend.position="top")+
@@ -303,10 +342,10 @@ There is a signifcant positive relationship between 24-hour NO2 exposure and log
 
 
 ## Result 3
-```{r,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Relationship between log(8-isoprostane) and 1-week NO2 exposure"}
-is.1w <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.1w)) +
-  geom_point(shape=1, size = 2) +
-   geom_point(shape=1, size = 2,color=gender) +
+```{r 22,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Relationship between log(8-isoprostane) and 1-week NO2 exposure"}
+is.1w <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.1w,color=dat1$gender)) +
+
+   geom_point(shape=1, size = 2) +
   geom_smooth(method="lm",se=FALSE,color="black")+
   labs(x = "NO2 exposure in one week", y = "log(8-isoprostane ng/ml)") +
     theme(legend.position="top")+
@@ -319,10 +358,9 @@ There is a significant positive relationship between 1-week NO2 exposure and log
 
 
 ## Result 4
-```{r,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Relationship between log(8-isoprostane) and 2-week NO2 exposure"}
-is.2w <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.2w)) +
-  geom_point(shape=1,size = 2) +
-   geom_point(shape=1, size = 2,color=gender) +
+```{r 23,warning=FALSE, message=FALSE,echo=FALSE,fig.cap="Relationship between log(8-isoprostane) and 2-week NO2 exposure"}
+is.2w <- ggplot(dat1, aes(y =log(is.ad) , x =no2exp.2w,color=dat1$gender)) +
+   geom_point(shape=1, size = 2) +
   geom_smooth(method="lm",se=FALSE,color="black")+
   labs(x = "NO2 exposure in 2 weeks", y = "log(8-isoprostane ng/ml)") +
     theme(legend.position="top")+

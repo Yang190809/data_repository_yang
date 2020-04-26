@@ -201,10 +201,10 @@ with urinary 8-isoprostane? Among periods of 12-hour,24-hour,1-week and
 \hypertarget{dataset-information}{%
 \section{Dataset Information}\label{dataset-information}}
 
-All the data are obtained from Jim Zhang's lab. The urine samples were
-collected from participants of a previously described study conducted in
-Changsha, China by Dr.~Zhang and other researchers ( Day, D. B., et.
-al.,2018). The study recruited 89 healthy individuals
+\#\#Data Collection All the data are obtained from Jim Zhang's lab. The
+urine samples were collected from participants of a previously described
+study conducted in Changsha, China by Dr.~Zhang and other researchers (
+Day, D. B., et. al.,2018). The study recruited 89 healthy individuals
 (age\textgreater18years old) who were living and working at the Broad
 Company Campus and divided them into 2 groups, Group A (n = 36) and
 Group B (n = 53). The study periods include pre-intervention,
@@ -216,18 +216,15 @@ NO2, and SO2, surveyed each participant's time-activity, and calculated
 the participants' exposure for each pollutant over 12h, 24h, 1 week and
 2 week periods, which were counted backward from the visit points.
 
-The file 8-iso is the data set of urinary biomarker 8-isoprostane. The
+The file 8-iso is the data set of urinary biomarker 8-isoprostane.The
 file urine\_info is the data set that has information about the subjects
 who provided the urine samples. The urine list is a data set with lists
 of information of sample ID, subject ID and visits. The meaning of the
 columns as well as units and class of the data in each foler is listed
 below. Column names without descriptors are irrelevant to this study.
 
-\hypertarget{urine-list-raw-data-set}{%
-\subsection{Urine list raw data set}\label{urine-list-raw-data-set}}
-
-The urine list has the information about the sample ID, subject ID and
-visits.
+\#\#Urine List The urine list is a data set with lists of information of
+sample ID, subject ID and visits.
 
 \begin{longtable}[]{@{}llll@{}}
 \toprule
@@ -243,17 +240,14 @@ integer\tabularnewline
 \bottomrule
 \end{longtable}
 
-kable(mytable,caption=``Description of variables'')
+kable(Table1,caption=``Urine list raw data set'')
 
-\hypertarget{isoprostane-data-set}{%
-\subsection{8-isoprostane data set}\label{isoprostane-data-set}}
-
-The 8-isoprostane data set has information about 8-isoprostane
-concentration tested in the mass spectrum and the concentration of
-8-isoprostane in original urine samples. The limit of detection for
-8-isoprostane was 0.016ng/ml. Any value which is below 0.016 in the
-column of calculated Conc in 8-is data set should be excluded as an
-error.
+\#\#8-isoprostane Data Set The 8-isoprostane data set has information
+about 8-isoprostane concentration tested in the mass spectrum and the
+concentration of 8-isoprostane in original urine samples. The limit of
+detection for 8-isoprostane was 0.016ng/ml. Any value which is below
+0.016 in the column of calculated Conc in 8-is data set should be
+excluded as an error.
 
 \begin{longtable}[]{@{}llll@{}}
 \toprule
@@ -269,16 +263,14 @@ numeric\tabularnewline
 \bottomrule
 \end{longtable}
 
-kable(mytable,caption=``Description of variables'')
+kable(Table2,caption=``8-isoprostane data set'')
 
-\hypertarget{urine-info}{%
-\subsection{Urine Info}\label{urine-info}}
-
-The urine info is the data set that has information about subjects
-characteristics and average pollutant exposure (NO2, SO2, O3, and
-PM2.5)over the periods of 12 hours, 24 hours, one week, and two weeks.
-It also includes average temperature and humidity over the periods of 12
-hours, 24 hours, one week, and two weeks.
+\#\#Urine Info Data Set The urine info is the data set that has
+information about subjects characteristics and average pollutant
+exposure (NO2, SO2, O3, and PM2.5)over the periods of 12 hours, 24
+hours, one week, and two weeks. It also includes average temperature and
+humidity over the periods of 12 hours, 24 hours, one week, and two
+weeks.
 
 \begin{longtable}[]{@{}llll@{}}
 \toprule
@@ -309,7 +301,7 @@ RHx.12h & humidity in 12h & ug/m3 & numeric\tabularnewline
 \bottomrule
 \end{longtable}
 
-kable(mytable,caption=``Description of variables'')
+kable(Table3,caption=``Urine info data set'')
 
 \hypertarget{data-wrangling}{%
 \subsection{Data Wrangling}\label{data-wrangling}}
@@ -324,8 +316,6 @@ specific urine gravity. This normalization can adjust the dilution in
 the urine. I obtained my final data by selecting columns that are
 relevant to my research question. Finally, the processed data was saved
 into a processed data folder.
-\includegraphics{C:/Users/26059/OneDrive/Desktop/ENV 872 R/Yang_ENV872/directory_yang/table.png}
-kable(mytable,caption=``Description of variables'')
 
 \newpage
 
@@ -351,7 +341,13 @@ kable(mytable,caption=``Description of variables'')
 \KeywordTok{library}\NormalTok{(car)}
 \KeywordTok{library}\NormalTok{(tidyverse)}
 \KeywordTok{library}\NormalTok{(cowplot)}
-\KeywordTok{library}\NormalTok{(RColorBrewer)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"stargazer"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(knitr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{# Set ggplot theme}
 \NormalTok{mytheme <-}\StringTok{ }\KeywordTok{theme_classic}\NormalTok{(}\DataTypeTok{base_size =} \DecValTok{25}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.text =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{color =} \StringTok{"black"}\NormalTok{), }
@@ -408,18 +404,17 @@ kable(mytable,caption=``Description of variables'')
 \NormalTok{full.data}\OperatorTok{$}\NormalTok{is.ad <-}\StringTok{ }\NormalTok{(full.data}\OperatorTok{$}\NormalTok{is.conc}\OperatorTok{/}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\NormalTok{full.data}\OperatorTok{$}\NormalTok{USG))}\OperatorTok{*}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\NormalTok{mean.cre)}
 
 \CommentTok{#select useful colums}
-\NormalTok{final.dat<-}\StringTok{ }\KeywordTok{select}\NormalTok{(full.data, Sample.ID, Subject.ID, is.ad, is.conc, is.origin, group,  COLD,   MNST,   last.ate,   wkday.start,go.home,Smoker,go.home, dt_smoke,   o3exp}\FloatTok{.12}\NormalTok{h,  pmexp}\FloatTok{.12}\NormalTok{h,no2exp}\FloatTok{.12}\NormalTok{h,   so2exp}\FloatTok{.12}\NormalTok{h, Temp}\FloatTok{.12}\NormalTok{h,   RHx}\FloatTok{.12}\NormalTok{h,    o3exp}\FloatTok{.24}\NormalTok{h,  pmexp}\FloatTok{.24}\NormalTok{h,  no2exp}\FloatTok{.24}\NormalTok{h, so2exp}\FloatTok{.24}\NormalTok{h, Temp}\FloatTok{.24}\NormalTok{h,   RHx}\FloatTok{.24}\NormalTok{h,    o3exp}\FloatTok{.1}\NormalTok{w,   pmexp}\FloatTok{.1}\NormalTok{w,   no2exp}\FloatTok{.1}\NormalTok{w,  so2exp}\FloatTok{.1}\NormalTok{w,  Temp}\FloatTok{.1}\NormalTok{w,    RHx}\FloatTok{.1}\NormalTok{w, o3exp}\FloatTok{.2}\NormalTok{w,   pmexp}\FloatTok{.2}\NormalTok{w,   no2exp}\FloatTok{.2}\NormalTok{w,  so2exp}\FloatTok{.2}\NormalTok{w,  Temp}\FloatTok{.2}\NormalTok{w,    RHx}\FloatTok{.2}\NormalTok{w )}
+\NormalTok{final.dat<-}\StringTok{ }\KeywordTok{select}\NormalTok{(full.data, Sample.ID, Subject.ID, is.ad, is.conc, is.origin, gender, COLD,   MNST,   last.ate,   wkday.start,go.home, dt_smoke,  o3exp}\FloatTok{.12}\NormalTok{h,  pmexp}\FloatTok{.12}\NormalTok{h,no2exp}\FloatTok{.12}\NormalTok{h,   so2exp}\FloatTok{.12}\NormalTok{h, Temp}\FloatTok{.12}\NormalTok{h,   RHx}\FloatTok{.12}\NormalTok{h,    o3exp}\FloatTok{.24}\NormalTok{h,  pmexp}\FloatTok{.24}\NormalTok{h,  no2exp}\FloatTok{.24}\NormalTok{h, so2exp}\FloatTok{.24}\NormalTok{h, Temp}\FloatTok{.24}\NormalTok{h,   RHx}\FloatTok{.24}\NormalTok{h,    o3exp}\FloatTok{.1}\NormalTok{w,   pmexp}\FloatTok{.1}\NormalTok{w,   no2exp}\FloatTok{.1}\NormalTok{w,  so2exp}\FloatTok{.1}\NormalTok{w,  Temp}\FloatTok{.1}\NormalTok{w,    RHx}\FloatTok{.1}\NormalTok{w, o3exp}\FloatTok{.2}\NormalTok{w,   pmexp}\FloatTok{.2}\NormalTok{w,   no2exp}\FloatTok{.2}\NormalTok{w,  so2exp}\FloatTok{.2}\NormalTok{w,  Temp}\FloatTok{.2}\NormalTok{w,    RHx}\FloatTok{.2}\NormalTok{w )}
 
 \CommentTok{#save processed data set}
 \KeywordTok{write.csv}\NormalTok{(final.dat, }\DataTypeTok{row.names =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{file =} \StringTok{"processed_data/final.dat.csv"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\textbf{2.Explore the data}
+\#\#Explore the data
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{library}\NormalTok{(ggplot2)}
 \CommentTok{#load processed data set}
 \NormalTok{dat <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"processed_data/final.dat.csv"}\NormalTok{)}
 \CommentTok{#remove outliers}
@@ -466,56 +461,96 @@ kable(mytable,caption=``Description of variables'')
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{#explore the data}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{verbatim}
+## 
+## Summary of Statistics
+## ------------------------------------------------------------------------
+## Statistic             N   Mean  St. Dev.  Min   Pctl(25) Pctl(75)  Max  
+## ========================================================================
+## 12-hour NO2 exposure 302 24.114  8.158   12.124  19.959   27.436  41.964
+## 24-hour NO2 exposure 302 23.720  6.827   12.373  18.405   27.049  39.351
+## 1-week NO2 exposure  302 24.090  4.913   16.562  19.243   27.869  35.193
+## 2-week NO2 exposure  302 25.489  2.542   20.805  23.999   26.755  32.173
+## ========================================================================
+\end{verbatim}
+
+\begin{longtable}[]{@{}l@{}}
+\caption{Summary of NO2 exposure}\tabularnewline
+\toprule
+x\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+x\tabularnewline
+\midrule
+\endhead
+\tabularnewline
+Summary of Statistics\tabularnewline
+------------------------------------------------------------------------\tabularnewline
+Statistic N Mean St.~Dev. Min Pctl(25) Pctl(75) Max\tabularnewline
+========================================================================\tabularnewline
+12-hour NO2 exposure 302 24.114 8.158 12.124 19.959 27.436
+41.964\tabularnewline
+24-hour NO2 exposure 302 23.720 6.827 12.373 18.405 27.049
+39.351\tabularnewline
+1-week NO2 exposure 302 24.090 4.913 16.562 19.243 27.869
+35.193\tabularnewline
+2-week NO2 exposure 302 25.489 2.542 20.805 23.999 26.755
+32.173\tabularnewline
+========================================================================\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{#calculate IQR for each period}
-\NormalTok{sum3<-}\KeywordTok{summary}\NormalTok{(dat}\OperatorTok{$}\NormalTok{no2exp}\FloatTok{.12}\NormalTok{h)}
-\NormalTok{no2}\FloatTok{.12}\NormalTok{ <-sum3[}\DecValTok{5}\NormalTok{]}\OperatorTok{-}\NormalTok{sum3[}\DecValTok{2}\NormalTok{]}
+\NormalTok{no2}\FloatTok{.12}\NormalTok{ <-no2.sum1[}\DecValTok{5}\NormalTok{]}\OperatorTok{-}\NormalTok{no2.sum1[}\DecValTok{2}\NormalTok{]}
 \NormalTok{no2}\FloatTok{.12}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  3rd Qu. 
-## 7.409404
+## 7.476984
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{sum4<-}\KeywordTok{summary}\NormalTok{(dat}\OperatorTok{$}\NormalTok{no2exp}\FloatTok{.24}\NormalTok{h)}
-\NormalTok{no2}\FloatTok{.24}\NormalTok{ <-sum4[}\DecValTok{5}\NormalTok{]}\OperatorTok{-}\NormalTok{sum4[}\DecValTok{2}\NormalTok{]}
+\NormalTok{no2}\FloatTok{.24}\NormalTok{ <-no2.sum2[}\DecValTok{5}\NormalTok{]}\OperatorTok{-}\NormalTok{no2.sum2[}\DecValTok{2}\NormalTok{]}
 \NormalTok{no2}\FloatTok{.24}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  3rd Qu. 
-## 8.638027
+## 8.643751
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{sum5<-}\KeywordTok{summary}\NormalTok{(dat}\OperatorTok{$}\NormalTok{no2exp}\FloatTok{.1}\NormalTok{w)}
-\NormalTok{no2}\FloatTok{.1}\NormalTok{w <-sum5[}\DecValTok{5}\NormalTok{]}\OperatorTok{-}\NormalTok{sum5[}\DecValTok{2}\NormalTok{]}
+\NormalTok{no2}\FloatTok{.1}\NormalTok{w <-no2.sum3[}\DecValTok{5}\NormalTok{]}\OperatorTok{-}\NormalTok{no2.sum3[}\DecValTok{2}\NormalTok{]}
 \NormalTok{no2}\FloatTok{.1}\NormalTok{w}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  3rd Qu. 
-## 8.617326
+## 8.626535
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{sum6<-}\KeywordTok{summary}\NormalTok{(dat}\OperatorTok{$}\NormalTok{no2exp}\FloatTok{.2}\NormalTok{w)}
-\NormalTok{no2}\FloatTok{.2}\NormalTok{w <-sum6[}\DecValTok{5}\NormalTok{]}\OperatorTok{-}\NormalTok{sum6[}\DecValTok{2}\NormalTok{]}
+\NormalTok{no2}\FloatTok{.2}\NormalTok{w <-no2.sum4[}\DecValTok{5}\NormalTok{]}\OperatorTok{-}\NormalTok{no2.sum4[}\DecValTok{2}\NormalTok{]}
 \NormalTok{no2}\FloatTok{.2}\NormalTok{w}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  3rd Qu. 
-## 2.736119
+## 2.755933
 \end{verbatim}
 
 \textbf{3.Build models}
@@ -651,13 +686,12 @@ kable(mytable,caption=``Description of variables'')
 \end{Shaded}
 
 \begin{verbatim}
-##  [1] Sample.ID   Subject.ID  is.ad       is.conc     is.origin   group      
-##  [7] COLD        MNST        last.ate    wkday.start go.home     Smoker     
-## [13] dt_smoke    o3exp.12h   pmexp.12h   no2exp.12h  so2exp.12h  Temp.12h   
-## [19] RHx.12h     o3exp.24h   pmexp.24h   no2exp.24h  so2exp.24h  Temp.24h   
-## [25] RHx.24h     o3exp.1w    pmexp.1w    no2exp.1w   so2exp.1w   Temp.1w    
-## [31] RHx.1w      o3exp.2w    pmexp.2w    no2exp.2w   so2exp.2w   Temp.2w    
-## [37] RHx.2w     
+##  [1] Sample.ID   Subject.ID  is.ad       is.conc     is.origin   gender     
+##  [7] COLD        MNST        last.ate    wkday.start go.home     dt_smoke   
+## [13] o3exp.12h   pmexp.12h   no2exp.12h  so2exp.12h  Temp.12h    RHx.12h    
+## [19] o3exp.24h   pmexp.24h   no2exp.24h  so2exp.24h  Temp.24h    RHx.24h    
+## [25] o3exp.1w    pmexp.1w    no2exp.1w   so2exp.1w   Temp.1w     RHx.1w     
+## [31] o3exp.2w    pmexp.2w    no2exp.2w   so2exp.2w   Temp.2w     RHx.2w     
 ## <0 rows> (or 0-length row.names)
 \end{verbatim}
 
@@ -670,7 +704,7 @@ kable(mytable,caption=``Description of variables'')
 
 \begin{verbatim}
 ##   3rd Qu. 
-## 0.1945016
+## 0.1962756
 \end{verbatim}
 
 \begin{Shaded}
@@ -681,7 +715,7 @@ kable(mytable,caption=``Description of variables'')
 
 \begin{verbatim}
 ##   3rd Qu. 
-## 0.2455652
+## 0.2478049
 \end{verbatim}
 
 \begin{Shaded}
@@ -692,7 +726,7 @@ kable(mytable,caption=``Description of variables'')
 
 \begin{verbatim}
 ##   3rd Qu. 
-## 0.1437785
+## 0.1450899
 \end{verbatim}
 
 3.2 Build models for 24-hour NO2 exposure
@@ -820,13 +854,12 @@ kable(mytable,caption=``Description of variables'')
 \end{Shaded}
 
 \begin{verbatim}
-##  [1] Sample.ID   Subject.ID  is.ad       is.conc     is.origin   group      
-##  [7] COLD        MNST        last.ate    wkday.start go.home     Smoker     
-## [13] dt_smoke    o3exp.12h   pmexp.12h   no2exp.12h  so2exp.12h  Temp.12h   
-## [19] RHx.12h     o3exp.24h   pmexp.24h   no2exp.24h  so2exp.24h  Temp.24h   
-## [25] RHx.24h     o3exp.1w    pmexp.1w    no2exp.1w   so2exp.1w   Temp.1w    
-## [31] RHx.1w      o3exp.2w    pmexp.2w    no2exp.2w   so2exp.2w   Temp.2w    
-## [37] RHx.2w     
+##  [1] Sample.ID   Subject.ID  is.ad       is.conc     is.origin   gender     
+##  [7] COLD        MNST        last.ate    wkday.start go.home     dt_smoke   
+## [13] o3exp.12h   pmexp.12h   no2exp.12h  so2exp.12h  Temp.12h    RHx.12h    
+## [19] o3exp.24h   pmexp.24h   no2exp.24h  so2exp.24h  Temp.24h    RHx.24h    
+## [25] o3exp.1w    pmexp.1w    no2exp.1w   so2exp.1w   Temp.1w     RHx.1w     
+## [31] o3exp.2w    pmexp.2w    no2exp.2w   so2exp.2w   Temp.2w     RHx.2w     
 ## <0 rows> (or 0-length row.names)
 \end{verbatim}
 
@@ -838,8 +871,8 @@ kable(mytable,caption=``Description of variables'')
 \end{Shaded}
 
 \begin{verbatim}
-##  3rd Qu. 
-## 0.276919
+##   3rd Qu. 
+## 0.2771025
 \end{verbatim}
 
 \begin{Shaded}
@@ -850,7 +883,7 @@ kable(mytable,caption=``Description of variables'')
 
 \begin{verbatim}
 ##   3rd Qu. 
-## 0.3494593
+## 0.3496909
 \end{verbatim}
 
 \begin{Shaded}
@@ -861,7 +894,7 @@ kable(mytable,caption=``Description of variables'')
 
 \begin{verbatim}
 ##   3rd Qu. 
-## 0.2049643
+## 0.2051001
 \end{verbatim}
 
 3.3 Build models for 1-week NO2 exposure
@@ -989,8 +1022,8 @@ kable(mytable,caption=``Description of variables'')
 \end{Shaded}
 
 \begin{verbatim}
-##   3rd Qu. 
-## 0.2515213
+## 3rd Qu. 
+## 0.25179
 \end{verbatim}
 
 \begin{Shaded}
@@ -1001,7 +1034,7 @@ kable(mytable,caption=``Description of variables'')
 
 \begin{verbatim}
 ##   3rd Qu. 
-## 0.3630776
+## 0.3634656
 \end{verbatim}
 
 \begin{Shaded}
@@ -1012,7 +1045,7 @@ kable(mytable,caption=``Description of variables'')
 
 \begin{verbatim}
 ##   3rd Qu. 
-## 0.1413507
+## 0.1415017
 \end{verbatim}
 
 3.4 Build models for 2-week NO2 exposure
@@ -1184,8 +1217,8 @@ kable(mytable,caption=``Description of variables'')
 \end{Shaded}
 
 \begin{verbatim}
-##  3rd Qu. 
-## 0.156784
+##   3rd Qu. 
+## 0.1579193
 \end{verbatim}
 
 \begin{Shaded}
@@ -1196,7 +1229,7 @@ kable(mytable,caption=``Description of variables'')
 
 \begin{verbatim}
 ##   3rd Qu. 
-## 0.2265202
+## 0.2281605
 \end{verbatim}
 
 \begin{Shaded}
@@ -1207,7 +1240,7 @@ kable(mytable,caption=``Description of variables'')
 
 \begin{verbatim}
 ##    3rd Qu. 
-## 0.08868928
+## 0.08933151
 \end{verbatim}
 
 \hypertarget{exploratory-analysis}{%
@@ -1221,16 +1254,28 @@ need to use the more normalized log-transformed concentrations of
 urinary 8-isoprostane. The distribution of data in log(8-isoprostane)
 (Figure 2)looks more normalized than the distribution of data of
 8-isoprostane in (Figure 1).
-\includegraphics{Wang_ENV872_Project_files/figure-latex/unnamed-chunk-6-1.pdf}
 
-\includegraphics{Wang_ENV872_Project_files/figure-latex/unnamed-chunk-7-1.pdf}
-\# Analysis I used linear mixed models with participant-specific
-intercepts. The inclusion of participants as a variable in mixed-effects
-models account for the correlation of repeated measurements from the
-same individuals and precludes the need to control for participant
-characteristics (e.g., age, gender, BMI, the identity of smoker or
-non-smoker) that do not change across the four longitudinal
-measurements.
+\begin{figure}
+\centering
+\includegraphics{Wang_ENV872_Project_files/figure-latex/16-1.pdf}
+\caption{Plot of 8-isoprostane}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{Wang_ENV872_Project_files/figure-latex/17-1.pdf}
+\caption{Plot of log(8-isoprostane)}
+\end{figure}
+
+\hypertarget{analysis}{%
+\section{Analysis}\label{analysis}}
+
+I used linear mixed models with participant-specific intercepts. The
+inclusion of participants as a variable in mixed-effects models account
+for the correlation of repeated measurements from the same individuals
+and precludes the need to control for participant characteristics (e.g.,
+age, gender, BMI, the identity of smoker or non-smoker) that do not
+change across the four longitudinal measurements.
 
 I used NO2 exposure as predicting variables and log-transformed urinary
 biomarkers as dependent variables. For each biomarker, I built 4 models
@@ -1251,8 +1296,8 @@ skewed distribution of log scaled of the predicting variable .In
 general, the residue distribution is not bad. No value is bigger than an
 absolute value of 2.5.
 
-\includegraphics{Wang_ENV872_Project_files/figure-latex/unnamed-chunk-9-1.pdf}
-Both 12-hour, 24-hour, 1-week and 2-week NO2 exposure showed significant
+\includegraphics{Wang_ENV872_Project_files/figure-latex/19-1.pdf} Both
+12-hour, 24-hour, 1-week and 2-week NO2 exposure showed significant
 correlations with the level of urinary 8-isoprostane, especially the
 2-week NO2 exposure.
 
@@ -1261,7 +1306,7 @@ correlations with the level of urinary 8-isoprostane, especially the
 
 \begin{figure}
 \centering
-\includegraphics{Wang_ENV872_Project_files/figure-latex/unnamed-chunk-10-1.pdf}
+\includegraphics{Wang_ENV872_Project_files/figure-latex/20 -1.pdf}
 \caption{Relationship between log(8-isoprostane) and 12-hour NO2
 exposure}
 \end{figure}
@@ -1278,7 +1323,7 @@ which is the fraction of total variance explained by the model
 
 \begin{figure}
 \centering
-\includegraphics{Wang_ENV872_Project_files/figure-latex/unnamed-chunk-11-1.pdf}
+\includegraphics{Wang_ENV872_Project_files/figure-latex/21-1.pdf}
 \caption{Relationship between log(8-isoprostane) and 24-hour NO2
 exposure}
 \end{figure}
@@ -1295,7 +1340,7 @@ of total variance explained by the model.
 
 \begin{figure}
 \centering
-\includegraphics{Wang_ENV872_Project_files/figure-latex/unnamed-chunk-12-1.pdf}
+\includegraphics{Wang_ENV872_Project_files/figure-latex/22-1.pdf}
 \caption{Relationship between log(8-isoprostane) and 1-week NO2
 exposure}
 \end{figure}
@@ -1312,7 +1357,7 @@ of total variance explained by the model.
 
 \begin{figure}
 \centering
-\includegraphics{Wang_ENV872_Project_files/figure-latex/unnamed-chunk-13-1.pdf}
+\includegraphics{Wang_ENV872_Project_files/figure-latex/23-1.pdf}
 \caption{Relationship between log(8-isoprostane) and 2-week NO2
 exposure}
 \end{figure}
